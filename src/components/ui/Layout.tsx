@@ -1,38 +1,42 @@
-import Header from "../ui/Header";
-import Footer from "../ui/Footer";
-import Graph from "../ui/Graph";
-import { useEffect, useState } from "react";
-import { SelectedPokemon } from "../../util/SelectedPokemon";
-import PokeInputGroup from "./PokeInput/PokeInputGroup";
-import { Field } from "../../util/FieldClass";
-import { DumpFieldDebug } from "./debug/DumpFieldDebug";
-import { DumpStatsDebug } from "./debug/DumpStatsDebug";
-import AttackSelect from "./PokeInput/AttackSelect";
-import { DumpAttackDebug } from "./debug/DumpAttackDebug";
-import { Dex } from "@pkmn/dex";
+import Header from "./Header";
+import Footer from "./Footer";
+import { SelectedPokemon, createSelectedPokemon } from "../../util/SelectedPokemon";
+
+import { Dex, LearnsetData, Move } from "@pkmn/dex";
+import PokeSet from "./PokeSet";
+import React, { useState } from "react";
+import { AttackSelect } from "./AttackSelect";
+import EVSlider from "./EVSlider";
+import { Graph, GraphContainer } from "./Graph";
 
 
 function Layout() {
-    const [attacker, setAttacker] = useState<SelectedPokemon>(new SelectedPokemon(Dex.forGen(9).species.get("Bulbasaur")));
-    const [defender, setDefender] = useState<SelectedPokemon>(new SelectedPokemon(Dex.forGen(9).species.get("Bulbasaur")));
-    const [field, setField] = useState<Field>(new Field());
-    const [attack, setAttack] = useState<string>("")
+    const [attacker, setAttacker] = useState<SelectedPokemon>(createSelectedPokemon("Bulbasaur"));
+    const [defender, setDefender] = useState<SelectedPokemon>(createSelectedPokemon("Bulbasaur"));
+    const [attack, setAttack] = useState<Move>(Dex.forGen(9).moves.get("Select Move"));
+    // const [field, setField] = useState<Field>(new Field());
 
     return (
         <div className="flex flex-col items-center gap-10">
             <Header></Header>
-            <PokeInputGroup
-                attacker={attacker}
-                defender={defender}
-                setAttacker={setAttacker}
-                setDefender={setDefender}
-                setField={setField}
-                setAttack={setAttack}>
-            </PokeInputGroup>
-            {/* <DumpFieldDebug fieldConditions={field}></DumpFieldDebug> */}
-            {/* <DumpAttackDebug attack={attack} ></DumpAttackDebug> */}
-
-            {/* <Graph attacker={attacker} defender={defender} attack={attack} field={field}></Graph> */}
+            <div className="flex flex-row gap-48">
+                {/* TODO: Attacker/Defender Slider */}
+                <div className="flex flex-col gap-16">
+                    {/* Attacker */}
+                    <div className="flex-col flex gap-4"> {/*12rem (Sprite) + (8 (Sprite Gap) + 16 * 6 (Stat Columns) + 4 * 5 (Stat Gaps) + 4 * 2 (Stat Padding))/4 */}
+                        <PokeSet pkmn={attacker} setPkmn={setAttacker}></PokeSet>
+                    </div>
+                    {/* Defender */}
+                    <div className="flex-col flex gap-4">
+                        <PokeSet pkmn={defender} setPkmn={setDefender}></PokeSet>
+                    </div>
+                </div>
+                {/* TODO: Field Conditions */}
+                <div className="flex flex-col gap-8 border">
+                    <AttackSelect pkmn={attacker} attack={attack} setAttack={setAttack} ></AttackSelect>
+                    <GraphContainer attacker={attacker} setAttacker={setAttacker} defender={defender} setDefender={setDefender} attack={attack}></GraphContainer>
+                </div>
+            </div>
             <Footer></Footer>
         </div >
     );

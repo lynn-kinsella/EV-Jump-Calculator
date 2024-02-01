@@ -1,64 +1,176 @@
-import { Species, Dex } from "@pkmn/dex";
-import { Ability, PokeAPIPokemonInterface, Stat } from "../types/PokeAPIPokemon";
-import { getHP, getNatureMod, getStat } from "./PokeCalcs"
-import { Pokemon } from "@smogon/calc";
+import { Species, Dex, StatID, NatureName, Item, StatusName, AbilityName, StatsTable, TypeName } from "@pkmn/dex";
+import { Generations, Pokemon, STATS, Stats } from "@smogon/calc";
 
-interface Stats {
-    hp: number;
-    atk: number;
-    def: number;
-    spa: number;
-    spdf: number;
-    spe: number;
+export interface SelectedPokemon {
+    calcData: Pokemon;
+    speciesData: Species
 }
 
-interface BaseStats extends Stats {
-
+export function createSelectedPokemon(name: string): SelectedPokemon {
+    const species = Dex.forGen(9).species.get(name);
+    const calcData = new Pokemon(9, species.name, {
+        level: 50,
+        ivs: {
+            hp: 31,
+            atk: 31,
+            def: 31,
+            spa: 31,
+            spd: 31,
+            spe: 31
+        }
+    })
+    return { speciesData: species, calcData: calcData }
 }
 
-interface EVStats extends Stats {
-
+export function updateSelectedSpecies(pkmn: SelectedPokemon, newSpecies: Species): SelectedPokemon {
+    try {
+        const newPkmn = {
+            speciesData: newSpecies,
+            calcData: new Pokemon(9, newSpecies.name, {
+                level: pkmn.calcData.level,
+                item: pkmn.calcData.item,
+                nature: pkmn.calcData.nature,
+                evs: pkmn.calcData.evs,
+                ivs: pkmn.calcData.ivs,
+                boosts: pkmn.calcData.boosts
+            })
+        };
+        (Object.keys(newPkmn.calcData.stats) as StatID[]).forEach((stat: StatID) => {
+            newPkmn.calcData.stats[stat] = calcStatWrapper(newPkmn, stat)
+        })
+        return newPkmn
+    }
+    catch (e) {
+        alert("@smogon/calc not updated to support calcs for DLC 2 Pokemon");
+        return pkmn;
+    }
 }
 
-interface ItemStats extends Stats {
-
-}
-
-
-export class SelectedPokemon {
-    pokeSpecies: Species;
-    pokeCalc: Pokemon;
-
-    constructor(species: Species) {
-        this.pokeSpecies = species;
-        this.pokeCalc = new Pokemon(9, this.pokeSpecies.name, { level: 50 })
+export function updateSelectedEVs(pkmn: SelectedPokemon, stat: StatID, evs: number): SelectedPokemon {
+    var workingPokemon = {
+        speciesData: pkmn.speciesData,
+        calcData: pkmn.calcData
     }
 
-    // assignStats(apiRes: Stat[]) {
-    //     this.baseStats.hp = apiRes[0].base_stat;
-    //     this.baseStats.atk = apiRes[1].base_stat;
-    //     this.baseStats.def = apiRes[2].base_stat;
-    //     this.baseStats.spa = apiRes[3].base_stat;
-    //     this.baseStats.spdf = apiRes[4].base_stat;
-    //     this.baseStats.spe = apiRes[5].base_stat;
-    // }
+    workingPokemon.calcData.evs[stat] = evs;
+    workingPokemon.calcData.stats[stat] = calcStatWrapper(workingPokemon, stat)
+    return workingPokemon
+}
 
-    // assignAbilities(apiRes: Ability[]) {
-    //     apiRes.forEach(ability => {
-    //         this.abilities.push(ability.ability.name);
-    //     });
-    // }
+export function updateSelectedIVs(pkmn: SelectedPokemon, stat: StatID, ivs: number): SelectedPokemon {
+    var workingPokemon = {
+        speciesData: pkmn.speciesData,
+        calcData: pkmn.calcData
+    }
 
-    // calcStats() {
-    //     this.stats.hp = getHP(this.baseStats.hp, this.evs.hp);
-    //     this.stats.atk = getStat(this.baseStats.atk * this.statModifier.atk, this.evs.atk, getNatureMod("atk", this.nature));
-    //     this.stats.def = getStat(this.baseStats.def * this.statModifier.def, this.evs.def, getNatureMod("def", this.nature));
-    //     this.stats.spa = getStat(this.baseStats.spa * this.statModifier.spa, this.evs.spa, getNatureMod("spa", this.nature));
-    //     this.stats.spdf = getStat(this.baseStats.spdf * this.statModifier.spdf, this.evs.spdf, getNatureMod("spdf", this.nature));
-    //     this.stats.spe = getStat(this.baseStats.spe * this.statModifier.spe, this.evs.spe, getNatureMod("spe", this.nature));
-    // }
+    workingPokemon.calcData.ivs[stat] = ivs;
+    workingPokemon.calcData.stats[stat] = calcStatWrapper(workingPokemon, stat)
+    return workingPokemon
+}
 
-    // setSelectedAbility(index: number) {
-    //     this.selectedAbility = index;
-    // }
+export function updateSelectedBoosts(pkmn: SelectedPokemon, stat: StatID, boost: number): SelectedPokemon {
+    var workingPokemon = {
+        speciesData: pkmn.speciesData,
+        calcData: pkmn.calcData
+    }
+
+    workingPokemon.calcData.boosts[stat] = boost;
+    workingPokemon.calcData.stats[stat] = calcStatWrapper(workingPokemon, stat)
+    return workingPokemon
+}
+
+export function updateSelectedNature(pkmn: SelectedPokemon, nature: NatureName): SelectedPokemon {
+    var workingPokemon = {
+        speciesData: pkmn.speciesData,
+        calcData: pkmn.calcData
+    }
+
+    workingPokemon.calcData.nature = nature;
+    (Object.keys(pkmn.calcData.stats) as StatID[]).forEach((stat: StatID) => {
+        workingPokemon.calcData.stats[stat] = calcStatWrapper(workingPokemon, stat)
+    })
+    return workingPokemon
+}
+
+export function updateSelectedAbility(pkmn: SelectedPokemon, ability: AbilityName): SelectedPokemon {
+    var workingPokemon = {
+        speciesData: pkmn.speciesData,
+        calcData: pkmn.calcData
+    }
+
+    workingPokemon.calcData.ability = ability;
+    return workingPokemon
+}
+
+export function updateSelectedAbilityActive(pkmn: SelectedPokemon, abilityOn: boolean): SelectedPokemon {
+    var workingPokemon = {
+        speciesData: pkmn.speciesData,
+        calcData: pkmn.calcData
+    }
+
+    workingPokemon.calcData.abilityOn = abilityOn;
+    return workingPokemon
+}
+
+export function updateSelectedItem(pkmn: SelectedPokemon, item: Item | undefined): SelectedPokemon {
+    var workingPokemon = {
+        speciesData: pkmn.speciesData,
+        calcData: pkmn.calcData
+    }
+
+    workingPokemon.calcData.item = item?.name;
+    return workingPokemon
+}
+
+export function updateSelectedTera(pkmn: SelectedPokemon, teraType: TypeName | undefined): SelectedPokemon {
+    var workingPokemon = {
+        speciesData: pkmn.speciesData,
+        calcData: pkmn.calcData
+    }
+
+    workingPokemon.calcData.teraType = teraType ? teraType : undefined;
+
+    return workingPokemon
+}
+
+
+export function getItemBoosts(pkmn: SelectedPokemon, statName: StatID): number {
+    var rawStat = pkmn.calcData.stats[statName];
+    if (pkmn.calcData.item) {
+        switch (statName) {
+            case "spe":
+                if (["Choice Scarf"].includes(pkmn.calcData.item)) {
+                    rawStat = -Math.round(-rawStat * 1.5);
+                }
+                else if (["Iron Ball", "Power Anklet", "Power Band", "Power Bracer", "Power Lens", "Power Weight", "Power Belt"].includes(pkmn.calcData.item)) {
+                    rawStat = -Math.round(-rawStat / 2);
+                }
+                break;
+            case "atk":
+                if (["Choice Band"].includes(pkmn.calcData.item)) {
+                    rawStat = -Math.round(-rawStat * 1.5);
+                }
+                break;
+            case "spa":
+                if (["Choice Specs"].includes(pkmn.calcData.item)) {
+                    rawStat = -Math.round(-rawStat * 1.5);
+                }
+                break;
+        }
+    }
+    return rawStat;
+}
+
+export function calcStatWrapper(pkmn: SelectedPokemon, statName: StatID): number {
+    let rawStat = Stats.calcStat(
+        Generations.get(9),
+        statName,
+        pkmn.speciesData.baseStats[statName],
+        pkmn.calcData.ivs[statName],
+        pkmn.calcData.evs[statName],
+        pkmn.calcData.level,
+        pkmn.calcData.nature)
+    let boostedStat = -Math.round(-rawStat * (2 / (Math.abs(pkmn.calcData.boosts[statName]) + 2)) ** (pkmn.calcData.boosts[statName] > 0 ? -1 : 1))
+
+    return boostedStat
 }

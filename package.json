@@ -10,8 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@pkmn/dex": "^0.8.4",
-    "@smogon/calc": "^0.8.1",
+    "@pkmn/dex": "^0.8.6",
+    "@pkmn/img": "^0.2.23",
+    "@smogon/calc": "^0.9.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

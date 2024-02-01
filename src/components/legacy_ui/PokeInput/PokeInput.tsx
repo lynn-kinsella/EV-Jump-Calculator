@@ -5,7 +5,7 @@ import { SelectedPokemon } from "../../../util/SelectedPokemon.ts";
 import AttackSelect from "./AttackSelect.tsx";
 import { DumpStatsDebug } from "../debug/DumpStatsDebug.tsx";
 import Collapse from "../elements/Collapse.tsx";
-import EVSlider from "./EVSlider.tsx";
+import EVSlider from "../../ui/EVSlider.tsx";
 import PokeItemChoice from "./PokeItemChoice.tsx";
 import PokePicker from "./PokePicker.tsx";
 import { getPokedex } from "../../../hooks/apiData.ts";
