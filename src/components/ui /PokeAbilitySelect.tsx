@@ -1,4 +1,4 @@
-import { SelectedPokemon, updateSelectedAbility, updateSelectedAbilityActive } from "../../util/SelectedPokemon";
+import { SelectedPokemon, updateSelectedAbility, updateSelectedAbilityActive } from "../../util/SelectedPokemon_old";
 import React, { useState } from "react";
 import { AbilityName } from "@pkmn/dex";
 

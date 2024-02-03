@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SelectedPokemon, calcStatWrapper } from "../../util/SelectedPokemon";
+import { SelectedPokemon, calcStatWrapper } from "../../util/SelectedPokemon_old";
 import { calculate, Generations, Move as CalcMove } from "@smogon/calc";
 import { Move as DexMove, Move, NatureName, StatID } from "@pkmn/dex";
 import { pointsToEVs } from "../../util/PokeCalcs";

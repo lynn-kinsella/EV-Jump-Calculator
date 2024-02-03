@@ -2,7 +2,7 @@ import { PokeAPIPokemonList, Result } from "../types/PokeAPIPokemonList";
 import { PokeAPIPokemonSpecies, Variety } from "../types/PokeAPIPokemonSpecies";
 
 import { getIdFromURL } from "../util/PokeApiFormatting";
-import { SelectedPokemon } from "../util/SelectedPokemon";
+import { SelectedPokemon } from "../util/SelectedPokemon_old";
 import { Dex, Species } from '@pkmn/dex'
 
 export function getPokedex(): Species[] {

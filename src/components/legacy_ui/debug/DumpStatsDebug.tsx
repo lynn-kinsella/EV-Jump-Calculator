@@ -1,4 +1,4 @@
-import { SelectedPokemon } from "../../../util/SelectedPokemon";
+import { SelectedPokemon } from "../../../util/SelectedPokemon_old";
 
 interface DumpStatsInterface {
     selectedPokemon: SelectedPokemon | undefined;

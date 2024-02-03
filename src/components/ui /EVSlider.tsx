@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { SelectedPokemon, updateSelectedEVs } from "../../util/SelectedPokemon";
+import { SelectedPokemon, updateSelectedEVs } from "../../util/SelectedPokemon_old";
 import { evsToPoints, pointsToEVs } from "../../util/PokeCalcs";
 import { StatID } from "@pkmn/dex";
 

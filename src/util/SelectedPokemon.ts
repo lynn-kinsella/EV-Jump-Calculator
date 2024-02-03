@@ -1,176 +1,135 @@
 import { Species, Dex, StatID, NatureName, Item, StatusName, AbilityName, StatsTable, TypeName } from "@pkmn/dex";
 import { Generations, Pokemon, STATS, Stats } from "@smogon/calc";
 
-export interface SelectedPokemon {
+
+export class SelectedPokemon {
     calcData: Pokemon;
-    speciesData: Species
-}
+    speciesData: Species;
 
-export function createSelectedPokemon(name: string): SelectedPokemon {
-    const species = Dex.forGen(9).species.get(name);
-    const calcData = new Pokemon(9, species.name, {
-        level: 50,
-        ivs: {
-            hp: 31,
-            atk: 31,
-            def: 31,
-            spa: 31,
-            spd: 31,
-            spe: 31
+    constructor();
+    constructor(name: string);
+    constructor(name?: string) {
+        this.calcData = new Pokemon(9, "Bulbasaur");
+        this.speciesData = Dex.forGen(9).species.get("Bulbasaur");
+        if (name) {
+            this.createSelectedPokemon(name);
         }
-    })
-    return { speciesData: species, calcData: calcData }
-}
+    }
 
-export function updateSelectedSpecies(pkmn: SelectedPokemon, newSpecies: Species): SelectedPokemon {
-    try {
-        const newPkmn = {
-            speciesData: newSpecies,
-            calcData: new Pokemon(9, newSpecies.name, {
-                level: pkmn.calcData.level,
-                item: pkmn.calcData.item,
-                nature: pkmn.calcData.nature,
-                evs: pkmn.calcData.evs,
-                ivs: pkmn.calcData.ivs,
-                boosts: pkmn.calcData.boosts
-            })
-        };
-        (Object.keys(newPkmn.calcData.stats) as StatID[]).forEach((stat: StatID) => {
-            newPkmn.calcData.stats[stat] = calcStatWrapper(newPkmn, stat)
+    private createSelectedPokemon(name: string): void {
+        this.speciesData = Dex.forGen(9).species.get(name);
+        this.calcData = new Pokemon(9, this.speciesData.name, {
+            level: 50,
+            ivs: {
+                hp: 31,
+                atk: 31,
+                def: 31,
+                spa: 31,
+                spd: 31,
+                spe: 31
+            }
+        });
+    }
+
+    clone(): SelectedPokemon {
+        const clone = new SelectedPokemon()
+        clone.calcData = this.calcData;
+        clone.speciesData = this.speciesData;
+        return clone;
+    }
+
+    updateSpecies(newSpecies: Species) {
+        this.speciesData = newSpecies;
+        this.calcData = new Pokemon(9, this.speciesData.name, {
+            level: this.calcData.level,
+            item: this.calcData.item,
+            nature: this.calcData.nature,
+            evs: this.calcData.evs,
+            ivs: this.calcData.ivs,
+            boosts: this.calcData.boosts
+        });
+
+        (Object.keys(this.calcData.stats) as StatID[]).forEach((stat: StatID) => {
+            this.calcData.stats[stat] = this.calcStatWrapper(stat);
         })
-        return newPkmn
-    }
-    catch (e) {
-        alert("@smogon/calc not updated to support calcs for DLC 2 Pokemon");
-        return pkmn;
-    }
-}
-
-export function updateSelectedEVs(pkmn: SelectedPokemon, stat: StatID, evs: number): SelectedPokemon {
-    var workingPokemon = {
-        speciesData: pkmn.speciesData,
-        calcData: pkmn.calcData
     }
 
-    workingPokemon.calcData.evs[stat] = evs;
-    workingPokemon.calcData.stats[stat] = calcStatWrapper(workingPokemon, stat)
-    return workingPokemon
-}
-
-export function updateSelectedIVs(pkmn: SelectedPokemon, stat: StatID, ivs: number): SelectedPokemon {
-    var workingPokemon = {
-        speciesData: pkmn.speciesData,
-        calcData: pkmn.calcData
+    updateEVs(stat: StatID, evs: number) {
+        this.calcData.evs[stat] = evs;
+        this.calcData.stats[stat] = this.calcStatWrapper(stat);
     }
 
-    workingPokemon.calcData.ivs[stat] = ivs;
-    workingPokemon.calcData.stats[stat] = calcStatWrapper(workingPokemon, stat)
-    return workingPokemon
-}
-
-export function updateSelectedBoosts(pkmn: SelectedPokemon, stat: StatID, boost: number): SelectedPokemon {
-    var workingPokemon = {
-        speciesData: pkmn.speciesData,
-        calcData: pkmn.calcData
+    updateIVs(stat: StatID, ivs: number) {
+        this.calcData.ivs[stat] = ivs;
+        this.calcData.stats[stat] = this.calcStatWrapper(stat);
     }
 
-    workingPokemon.calcData.boosts[stat] = boost;
-    workingPokemon.calcData.stats[stat] = calcStatWrapper(workingPokemon, stat)
-    return workingPokemon
-}
-
-export function updateSelectedNature(pkmn: SelectedPokemon, nature: NatureName): SelectedPokemon {
-    var workingPokemon = {
-        speciesData: pkmn.speciesData,
-        calcData: pkmn.calcData
+    updateBoosts(stat: StatID, boost: number) {
+        this.calcData.boosts[stat] = boost;
+        this.calcData.stats[stat] = this.calcStatWrapper(stat);
     }
 
-    workingPokemon.calcData.nature = nature;
-    (Object.keys(pkmn.calcData.stats) as StatID[]).forEach((stat: StatID) => {
-        workingPokemon.calcData.stats[stat] = calcStatWrapper(workingPokemon, stat)
-    })
-    return workingPokemon
-}
-
-export function updateSelectedAbility(pkmn: SelectedPokemon, ability: AbilityName): SelectedPokemon {
-    var workingPokemon = {
-        speciesData: pkmn.speciesData,
-        calcData: pkmn.calcData
+    updateNature(nature: NatureName) {
+        this.calcData.nature = nature;
+        (Object.keys(this.calcData.stats) as StatID[]).forEach((stat: StatID) => {
+            this.calcData.stats[stat] = this.calcStatWrapper(stat)
+        })
     }
 
-    workingPokemon.calcData.ability = ability;
-    return workingPokemon
-}
-
-export function updateSelectedAbilityActive(pkmn: SelectedPokemon, abilityOn: boolean): SelectedPokemon {
-    var workingPokemon = {
-        speciesData: pkmn.speciesData,
-        calcData: pkmn.calcData
+    updateAbility(ability: AbilityName) {
+        this.calcData.ability = ability;
     }
 
-    workingPokemon.calcData.abilityOn = abilityOn;
-    return workingPokemon
-}
-
-export function updateSelectedItem(pkmn: SelectedPokemon, item: Item | undefined): SelectedPokemon {
-    var workingPokemon = {
-        speciesData: pkmn.speciesData,
-        calcData: pkmn.calcData
+    updateAbilityActive(abilityOn: boolean) {
+        this.calcData.abilityOn = abilityOn;
     }
 
-    workingPokemon.calcData.item = item?.name;
-    return workingPokemon
-}
-
-export function updateSelectedTera(pkmn: SelectedPokemon, teraType: TypeName | undefined): SelectedPokemon {
-    var workingPokemon = {
-        speciesData: pkmn.speciesData,
-        calcData: pkmn.calcData
+    updateItem(item: Item | undefined) {
+        this.calcData.item = item?.name;
     }
 
-    workingPokemon.calcData.teraType = teraType ? teraType : undefined;
+    updateTera(teraType: TypeName | undefined) {
+        this.calcData.teraType = teraType ? teraType : undefined;
+    }
 
-    return workingPokemon
-}
-
-
-export function getItemBoosts(pkmn: SelectedPokemon, statName: StatID): number {
-    var rawStat = pkmn.calcData.stats[statName];
-    if (pkmn.calcData.item) {
-        switch (statName) {
-            case "spe":
-                if (["Choice Scarf"].includes(pkmn.calcData.item)) {
-                    rawStat = -Math.round(-rawStat * 1.5);
-                }
-                else if (["Iron Ball", "Power Anklet", "Power Band", "Power Bracer", "Power Lens", "Power Weight", "Power Belt"].includes(pkmn.calcData.item)) {
-                    rawStat = -Math.round(-rawStat / 2);
-                }
-                break;
-            case "atk":
-                if (["Choice Band"].includes(pkmn.calcData.item)) {
-                    rawStat = -Math.round(-rawStat * 1.5);
-                }
-                break;
-            case "spa":
-                if (["Choice Specs"].includes(pkmn.calcData.item)) {
-                    rawStat = -Math.round(-rawStat * 1.5);
-                }
-                break;
+    getItemBoosts(statName: StatID): number {
+        var rawStat = this.calcData.stats[statName];
+        if (this.calcData.item) {
+            switch (statName) {
+                case "spe":
+                    if (["Choice Scarf"].includes(this.calcData.item)) {
+                        rawStat = -Math.round(-rawStat * 1.5);
+                    }
+                    else if (["Iron Ball", "Power Anklet", "Power Band", "Power Bracer", "Power Lens", "Power Weight", "Power Belt"].includes(this.calcData.item)) {
+                        rawStat = -Math.round(-rawStat / 2);
+                    }
+                    break;
+                case "atk":
+                    if (["Choice Band"].includes(this.calcData.item)) {
+                        rawStat = -Math.round(-rawStat * 1.5);
+                    }
+                    break;
+                case "spa":
+                    if (["Choice Specs"].includes(this.calcData.item)) {
+                        rawStat = -Math.round(-rawStat * 1.5);
+                    }
+                    break;
+            }
         }
+        return rawStat;
     }
-    return rawStat;
-}
 
-export function calcStatWrapper(pkmn: SelectedPokemon, statName: StatID): number {
-    let rawStat = Stats.calcStat(
-        Generations.get(9),
-        statName,
-        pkmn.speciesData.baseStats[statName],
-        pkmn.calcData.ivs[statName],
-        pkmn.calcData.evs[statName],
-        pkmn.calcData.level,
-        pkmn.calcData.nature)
-    let boostedStat = -Math.round(-rawStat * (2 / (Math.abs(pkmn.calcData.boosts[statName]) + 2)) ** (pkmn.calcData.boosts[statName] > 0 ? -1 : 1))
+    private calcStatWrapper(statName: StatID): number {
+        let rawStat = Stats.calcStat(
+            Generations.get(9),
+            statName,
+            this.speciesData.baseStats[statName],
+            this.calcData.ivs[statName],
+            this.calcData.evs[statName],
+            this.calcData.level,
+            this.calcData.nature)
+        let boostedStat = -Math.round(-rawStat * (2 / (Math.abs(this.calcData.boosts[statName]) + 2)) ** (this.calcData.boosts[statName] > 0 ? -1 : 1))
 
-    return boostedStat
+        return boostedStat
+    }
 }

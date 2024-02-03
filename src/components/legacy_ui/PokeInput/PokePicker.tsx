@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { SelectedPokemon as pkmn } from "../../../util/SelectedPokemon";
+import { SelectedPokemon as pkmn } from "../../../util/SelectedPokemon_old";
 import { Generations, Pokemon } from "@smogon/calc";
 import { PokeAPIPokemonInterface } from "../../../types/PokeAPIPokemon";
 import Sprite from "../elements/Sprite";

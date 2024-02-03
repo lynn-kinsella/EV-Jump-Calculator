@@ -1,6 +1,6 @@
 import Header from "./Header";
 import Footer from "./Footer";
-import { SelectedPokemon, createSelectedPokemon } from "../../util/SelectedPokemon";
+import { SelectedPokemon, createSelectedPokemon } from "../../util/SelectedPokemon_old";
 
 import { Dex, LearnsetData, Move } from "@pkmn/dex";
 import PokeSet from "./PokeSet";

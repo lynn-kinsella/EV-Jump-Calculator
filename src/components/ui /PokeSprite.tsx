@@ -1,4 +1,4 @@
-import { SelectedPokemon } from "../../util/SelectedPokemon";
+import { SelectedPokemon } from "../../util/SelectedPokemon_old";
 import { Sprites } from "@pkmn/img";
 import Sprite from "./Sprite";
 

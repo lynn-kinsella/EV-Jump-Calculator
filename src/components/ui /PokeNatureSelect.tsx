@@ -1,5 +1,5 @@
 import { NatureName } from "@pkmn/dex";
-import { SelectedPokemon, updateSelectedNature } from "../../util/SelectedPokemon";
+import { SelectedPokemon, updateSelectedNature } from "../../util/SelectedPokemon_old";
 import React, { useState } from "react";
 import { NATURES } from "@smogon/calc/dist/data/natures";
 

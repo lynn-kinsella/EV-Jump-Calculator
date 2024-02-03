@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Species } from "@pkmn/dex";
-import { SelectedPokemon } from "../../../util/SelectedPokemon";
+import { SelectedPokemon } from "../../../util/SelectedPokemon_old";
 import PokeInput from "./PokeInput";
 import { getPokedex } from "../../../hooks/apiData";
 import { Field } from "../../../util/FieldClass";

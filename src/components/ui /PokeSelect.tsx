@@ -1,7 +1,7 @@
 import { Dex } from "@pkmn/dex"
 import { Sprites } from "@pkmn/img"
 import { useState, useEffect } from "react"
-import { SelectedPokemon, updateSelectedSpecies } from "../../util/SelectedPokemon"
+import { SelectedPokemon, updateSelectedSpecies } from "../../util/SelectedPokemon_old"
 import Sprite from "./Sprite"
 
 interface PokeSelectProps {

@@ -1,4 +1,4 @@
-import { SelectedPokemon, updateSelectedTera } from "../../util/SelectedPokemon";
+import { SelectedPokemon, updateSelectedTera } from "../../util/SelectedPokemon_old";
 import React from "react";
 import { Dex, Type, TypeName } from "@pkmn/dex";
 

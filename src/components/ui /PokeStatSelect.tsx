@@ -1,5 +1,5 @@
 import { NatureName, StatID } from "@pkmn/dex";
-import { SelectedPokemon, getItemBoosts, updateSelectedBoosts, updateSelectedEVs, updateSelectedIVs } from "../../util/SelectedPokemon";
+import { SelectedPokemon, getItemBoosts, updateSelectedBoosts, updateSelectedEVs, updateSelectedIVs } from "../../util/SelectedPokemon_old";
 import React, { useEffect } from "react";
 import { validateEVs, validateIVs } from "../../util/PokeCalcs";
 import { NATURES } from "@smogon/calc/dist/data/natures";

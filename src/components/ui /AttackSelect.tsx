@@ -1,4 +1,4 @@
-import { SelectedPokemon } from "../../util/SelectedPokemon";
+import { SelectedPokemon } from "../../util/SelectedPokemon_old";
 import { Dex, Learnset, Move } from "@pkmn/dex";
 import React, { useEffect, useState } from "react";
 

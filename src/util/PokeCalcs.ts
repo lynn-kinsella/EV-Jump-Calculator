@@ -1,7 +1,7 @@
 
 
 import { StatID } from "@pkmn/dex";
-import { SelectedPokemon } from "./SelectedPokemon";
+import { SelectedPokemon } from "./SelectedPokemon_old";
 
 // Clamp EVs between 0 and 255, and prevent the total EVs for the pokemon
 // from exceeding 510

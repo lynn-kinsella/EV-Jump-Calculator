@@ -1,10 +1,10 @@
 import Header from "./Header";
 import Footer from "./Footer";
-import { SelectedPokemon, createSelectedPokemon } from "../../util/SelectedPokemon";
+import { SelectedPokemon, createSelectedPokemon } from "../../util/SelectedPokemon_old";
 
 import { Dex, LearnsetData, Move } from "@pkmn/dex";
 import PokeSet from "./PokeSet";
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { AttackSelect } from "./AttackSelect";
 import EVSlider from "./EVSlider";
 import { Graph, GraphContainer } from "./Graph";
@@ -19,16 +19,22 @@ function Layout() {
     return (
         <div className="flex flex-col items-center gap-10">
             <Header></Header>
-            <ColumnScroll></ColumnScroll>
+            <ColumnScroll>
+                test
+            </ColumnScroll>
             <Footer></Footer>
         </div >
     );
 }
 
-function ColumnScroll() {
-    return (
-        <div>
+interface ColumnScrollProps {
+    children: React.ReactNode
+}
 
+function ColumnScroll({ children }: ColumnScrollProps) {
+    return (
+        <div className="px-10 py-5 gap-20">
+            {children}
         </div>
     )
 }

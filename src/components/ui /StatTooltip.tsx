@@ -1,5 +1,5 @@
 import React from "react";
-import { SelectedPokemon } from "../../util/SelectedPokemon";
+import { SelectedPokemon } from "../../util/SelectedPokemon_old";
 import { StatID } from "@pkmn/dex";
 import { ColumnData, InputStats } from "./Graph";
 

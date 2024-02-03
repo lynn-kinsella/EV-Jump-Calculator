@@ -1,4 +1,4 @@
-import { SelectedPokemon } from "../../util/SelectedPokemon";
+import { SelectedPokemon } from "../../util/SelectedPokemon_old";
 import React, { useState } from "react";
 
 import PokeSelect from "./PokeSelect";
