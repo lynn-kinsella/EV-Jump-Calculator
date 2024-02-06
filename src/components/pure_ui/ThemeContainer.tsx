@@ -1,6 +1,3 @@
-import { CSSProperties } from "react";
-
-
 export interface ContainerProps {
     children?: JSX.Element | JSX.Element[] | string | number | boolean;
 }
@@ -12,7 +9,7 @@ export interface ThemeContainerProps extends ContainerProps {
 
 export function ColumnContainer({ children }: ContainerProps) {
     return (
-        <div className="flex flex-col px-5 py-10 gap-10 items-center">
+        <div className="flex flex-col p-5 gap-2 items-center w-[100%]">
             {children}
         </div>
     );
@@ -21,7 +18,7 @@ export function ColumnContainer({ children }: ContainerProps) {
 export function ThemeContainer({ children, direction }: ThemeContainerProps) {
 
     return (
-        <div className={`bg-yellow-100 flex border border-black rounded-md p-3 gap-0 sm:w-[80%] md:w-[50%] w-[100%] ${direction}`}>
+        <div className={`bg-yellow-100 flex border border-black rounded-md p-3 gap-0 items-start w-[100%] max-w-[50em] ${direction}`}>
             {children}
         </div>
     );
@@ -33,7 +30,7 @@ interface ThemeRowProps extends ContainerProps {
 }
 
 export function ThemeRow({ children, gapType = "gap", wrap = "nowrap" }: ThemeRowProps) {
-    const twStyle = `flex flex-row w-[100%] py-2 flex-${wrap} ${gapType == "between" ? "justify-between" : "gap-2"}`
+    const twStyle = `flex flex-row w-[100%] h-fit py-2 flex-${wrap} ${gapType == "between" ? "justify-between" : "gap-2"}`
     return (
         <div className={twStyle}>
             {children}

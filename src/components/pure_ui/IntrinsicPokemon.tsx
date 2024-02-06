@@ -1,7 +1,7 @@
-import React from "react";
 import { SelectedPokemon } from "../../util/SelectedPokemon";
 import { Pokedex } from "./Pokedex";
 import { PokemonOptions } from "./PokemonOptions";
+import { ThemeRow } from "./ThemeContainer";
 
 
 
@@ -11,11 +11,9 @@ export interface PokemonProps {
 }
 export function IntrinsicPokemon({ pkmn, updatePkmn }: PokemonProps) {
     return (
-        <div className="flex flex-row gap-x-5 gap-y-1 justify-center content-end w-[100%] h-[100%]">
-            {/* Pokedex */}
+        <ThemeRow gapType="gap" wrap="nowrap">
             <Pokedex updatePkmn={updatePkmn} pkmn={pkmn}></Pokedex>
-            {/* Options */}
             <PokemonOptions pkmn={pkmn} updatePkmn={updatePkmn}></PokemonOptions>
-        </div>
+        </ThemeRow>
     );
 }

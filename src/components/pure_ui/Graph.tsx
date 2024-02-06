@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { SelectedPokemon, calcStatWrapper } from "../../util/SelectedPokemon_old";
-import { calculate, Generations, Move as CalcMove } from "@smogon/calc";
-import { Move as DexMove, Move, NatureName, StatID } from "@pkmn/dex";
+import { displayMove } from "@smogon/calc/dist/desc";
+import { Pokemon } from "@smogon/calc";
+import { SelectedPokemon } from "../../util/SelectedPokemon";
+import { Move, NatureName, StatID } from "@pkmn/dex";
+import { FixedStat, LineIndicators } from "./GraphContainer";
+import { Field, Generations, calculate, Move as CalcMove } from "@smogon/calc";
+import { useEffect, useState } from "react";
 import { pointsToEVs } from "../../util/PokeCalcs";
 import { StatTooltip } from "./StatTooltip";
-import EVSlider from "./EVSlider";
+import { ThemeContainer } from "./ThemeContainer";
+import { HPLine } from "./HPLine";
+
+interface GraphProps {
+    attacker: SelectedPokemon;
+    defender: SelectedPokemon;
+    move: Move | undefined;
+    fixedStat: FixedStat;
+    lineIndicators: LineIndicators;
+    field: Field;
+}
+
 type GraphColumns = {
     [stat: string]: ColumnData
 }
-
-export type InputStats = {
-    stat: number;
-    nature: NatureMod;
-    evs: number;
-    ivs: number
-}
-
-export type ColumnData = {
-    inputStats: InputStats[];
-    calcs: {
-        low: number;
-        high: number;
-    };
-}
-
 type NatureMod = "+" | " " | "-";
-
 const keyNatures: { [stat in Exclude<StatID, "hp">]: { [mod in NatureMod]: NatureName } } = {
     atk: {
         "+": "Adamant",
@@ -54,181 +51,97 @@ const keyNatures: { [stat in Exclude<StatID, "hp">]: { [mod in NatureMod]: Natur
     }
 }
 
-const overheadMargin = 1.05
-
-type FixedSetting = "atk" | "def" | "spe"
-
-interface GraphContainerProps {
-    attacker: SelectedPokemon;
-    setAttacker: React.Dispatch<React.SetStateAction<SelectedPokemon>>;
-    defender: SelectedPokemon;
-    setDefender: React.Dispatch<React.SetStateAction<SelectedPokemon>>;
-    attack: Move;
+export type InputStats = {
+    stat: number;
+    nature: NatureMod;
+    evs: number;
+    ivs: number
 }
 
-export function GraphContainer({ attacker, defender, setAttacker, setDefender, attack }: GraphContainerProps) {
-
-    const [lineSettings, setLineSettings] = useState<number[]>([]);
-    const [fixedSettings, setFixedSettings] = useState<FixedSetting>("atk");
-    return (
-        <div className="flex flex-col gap-8">
-            <GraphOptions fixedSettings={fixedSettings} setFixedSettings={setFixedSettings} setLineSettings={setLineSettings} setAttacker={setAttacker} setDefender={setDefender} attack={attack}></GraphOptions>
-            <Graph attacker={attacker} defender={defender} attack={attack} lineSettings={lineSettings} fixedSettings={fixedSettings}></Graph>
-        </div>
-    )
+export type ColumnData = {
+    inputStats: InputStats[];
+    calcs: {
+        low: number;
+        high: number;
+    };
 }
 
-
-interface GraphOptionsProps {
-    setAttacker: React.Dispatch<React.SetStateAction<SelectedPokemon>>;
-    setDefender: React.Dispatch<React.SetStateAction<SelectedPokemon>>;
-    setFixedSettings: React.Dispatch<React.SetStateAction<FixedSetting>>;
-    fixedSettings: FixedSetting;
-    setLineSettings: React.Dispatch<React.SetStateAction<number[]>>;
-    attack: Move;
-}
-
-function GraphOptions({ setFixedSettings, fixedSettings, setLineSettings, setAttacker, setDefender, attack }: GraphOptionsProps) {
-
-    function handleChangeFixedSetting(e: React.ChangeEvent<HTMLInputElement>) {
-        let value = e.target.value as "atk" | "def";
-        setFixedSettings(value);
-    }
-
-    function handleChangeLines(value: number) {
-        if (value) {
-            setLineSettings((prevSettings) => {
-                let newSettings = [...prevSettings];
-
-                for (let i = 0; i < newSettings.length; i++) {
-                    if (newSettings[i] == value) {
-                        newSettings.splice(i, 1);
-                        return newSettings;
-                    }
-                }
-
-                newSettings.push(value);
-                return newSettings;
-            })
-        }
-    }
-
-    return (
-        <div className="flex flex-col gap-1">
-            <h1>Options:</h1>
-            <div>
-                <h2>HP Indicators:</h2>
-                <div className="flex flex-row gap-4">
-                    <div className="flex flex-row gap-1">
-                        <label>100% HP</label><input type="checkbox" onClick={() => handleChangeLines(16)} value={16} />
-                    </div>
-                    <div className="flex flex-row gap-1">
-                        <label>50% HP</label><input type="checkbox" onClick={() => handleChangeLines(8)} value={8} />
-                    </div>
-                    <div className="flex flex-row gap-1">
-                        <label>15/16 HP</label><input type="checkbox" onClick={() => handleChangeLines(15)} value={15} />
-                    </div>
-                    <div className="flex flex-row gap-1">
-                        <label>7/8 HP</label><input type="checkbox" onClick={() => handleChangeLines(14)} value={14} />
-                    </div>
-                </div>
-            </div>
-            <div>
-                <h2>Fixed Stat:</h2>
-                <div className="flex flex-row gap-4"><div className="flex flex-row gap-2 h-6">
-                    <span>Fix Atk EVs</span>
-                    <input type="radio" name="fixEvs" value="atk" checked={fixedSettings == "atk"} onChange={handleChangeFixedSetting} />
-                </div>
-                    <div className="flex flex-row gap-2 h-6">
-                        <span>Fix Def EVs</span>
-                        <input type="radio" name="fixEvs" value="def" checked={fixedSettings == "def"} onChange={handleChangeFixedSetting} />
-                    </div>
-                </div>
-            </div>
-            <div className="flex flex-col gap-1">
-                {fixedSettings == "atk" && <EVSlider updatePokemon={setAttacker} statName={attack.category == "Physical" ? "atk" : "spa"}></EVSlider>}
-                {fixedSettings == "def" && <EVSlider updatePokemon={setDefender} statName={attack.category == "Physical" ? "def" : "spd"}></EVSlider>}
-                <EVSlider updatePokemon={setDefender} statName={"hp"}></EVSlider>
-            </div>
-        </div>
-    )
-}
-
-
-interface GraphProps {
-    attacker: SelectedPokemon;
-    defender: SelectedPokemon;
-    attack: DexMove;
-    fixedSettings: FixedSetting;
-    lineSettings: number[];
-    // field: Field;
-}
-
-export function Graph({ attacker, defender, attack, fixedSettings, lineSettings }: GraphProps) {
+export function Graph({ attacker, defender, move, fixedStat, lineIndicators, field }: GraphProps) {
     const [graphData, setGraphData] = useState<GraphColumns>({});
     const [maxDmg, setMaxDmg] = useState<number>(0);
-    const [tooltipVisibility, setTooltipVisibility] = useState<boolean>(false);
+    const [tooltipVisibility, setTooltipVisibility] = useState<boolean>(true);
     const [currentColumn, setCurrentColumn] = useState<ColumnData | undefined>();
     const [mouseCoords, setMouseCoords] = useState<[number, number]>([0, 0])
 
+    const overheadMargin = 1.05;
 
     useEffect(() => {
-        if (attacker && defender && attack) {
-            if (attack.category == "Status") {
-                return
-            }
+        if (!move || move.category == "Status") {
+            setGraphData({});
+            return
+        }
+        var workingAttacker = attacker.clone();
+        var workingDefender = defender.clone();
+        var variedPokemon: SelectedPokemon;
+        var natureOptions: NatureMod[];
+        var variedStat: Exclude<StatID, "hp"> = getIndependentEV();
 
-            var attackerRange = attacker;
-            var defenderRange = defender;
-            var variedPokemon: SelectedPokemon;
-            var natureOptions: NatureMod[];
+        if (fixedStat == "def") {
+            variedPokemon = workingAttacker;
+            natureOptions = [" ", "+"];
+        }
+        else {
+            variedPokemon = workingDefender;
+            natureOptions = ["-", " ", "+"];
+        }
 
-            if (fixedSettings == "def") {
-                var variedStat: Exclude<StatID, "hp"> = attack.category == "Physical" ? "atk" : "spa";
-                attackerRange = { speciesData: attacker.speciesData, calcData: attacker.calcData.clone() };
-                variedPokemon = attackerRange;
-                natureOptions = ["+", " "];
-            }
-            else {
-                var variedStat: Exclude<StatID, "hp"> = attack.category == "Physical" ? "def" : "spd"
-                defenderRange = { speciesData: defender.speciesData, calcData: defender.calcData.clone() };
-                variedPokemon = defenderRange;
-                natureOptions = ["+", " ", "-"];
-            }
 
-            var maxDmg = defender.calcData.stats.hp;
-            var data: GraphColumns = {}
+        var data: GraphColumns = {}
+        const gen = Generations.get(9);
+        var statValue: number = 0;
 
-            const gen = Generations.get(9);
-
-            natureOptions.forEach((natureType: NatureMod) => {
-                variedPokemon.calcData.nature = keyNatures[variedStat][natureType];
-                for (var i = 0; i < 33; i++) {
-                    variedPokemon.calcData.evs[variedStat] = pointsToEVs(i)
+        natureOptions.forEach((natureType: NatureMod) => {
+            variedPokemon.updateNature(keyNatures[variedStat][natureType]);
+            for (var i = 0; i < 33; i++) {
+                variedPokemon.updateEVs(variedStat, pointsToEVs(i))
+                statValue = variedPokemon.calcStatWrapper(variedStat)
+                const inputStats: InputStats = {
+                    stat: statValue,
+                    nature: natureType,
+                    evs: variedPokemon.calcData.evs[variedStat],
+                    ivs: variedPokemon.calcData.ivs[variedStat]
+                }
+                if (!data[statValue]) {
                     const result = calculate(gen,
-                        attackerRange.calcData,
-                        defenderRange.calcData,
-                        new CalcMove(gen, attack.name)
+                        workingAttacker.calcData,
+                        workingDefender.calcData,
+                        new CalcMove(gen, move.name),
+                        field
                     );
                     const dmg: [number, number] = result.range();
-
-                    maxDmg = maxDmg < dmg[1] ? dmg[1] : maxDmg;
-                    const statValue: number = calcStatWrapper(variedPokemon, variedStat)
-                    const inputStats: InputStats = { stat: statValue, nature: natureType, evs: variedPokemon.calcData.evs[variedStat], ivs: variedPokemon.calcData.ivs[variedStat] }
-                    if (data[statValue]) {
-                        data[statValue].inputStats.push(inputStats)
-                    }
-                    else {
-                        data[statValue] = {
-                            inputStats: [inputStats], calcs: { "low": dmg[0], "high": dmg[1] }
-                        }
+                    data[statValue] = {
+                        inputStats: [inputStats], calcs: { "low": dmg[0], "high": dmg[1] }
                     }
                 }
-            })
-            setGraphData(data);
-            setMaxDmg(maxDmg);
-        }
-    }, [attacker, defender, attack])
+                else {
+                    data[statValue].inputStats.push(inputStats)
+                }
+            }
+        })
+        setMaxDmg(
+            Math.max(
+                workingDefender.calcData.stats.hp,
+                Object.values(data).
+                    reduce((acc: number, cur: ColumnData) => Math.max(acc, cur.calcs.high), 0)
+            )
+        )
+        setGraphData(data);
+    }, [attacker, defender, move, fixedStat, field])
+
+    function handleGraphHover(e: React.MouseEvent, data: ColumnData) {
+        setMouseCoords([e.pageY, e.pageX])
+        setCurrentColumn(data);
+    }
 
     function showTooltip() {
         setTooltipVisibility(true);
@@ -238,63 +151,74 @@ export function Graph({ attacker, defender, attack, fixedSettings, lineSettings 
         setTooltipVisibility(false);
     }
 
-    function handleGraphHover(e: React.MouseEvent, data: ColumnData) {
-        setMouseCoords([e.pageY, e.pageX])
-        setCurrentColumn(data);
+    function getIndependentEV(): Exclude<StatID, "hp"> {
+        if (move?.category == "Physical") {
+            return fixedStat == "def" ? "atk" : "def";
+        }
+        else {
+            return fixedStat == "def" ? "spa" : "spd";
+        }
     }
 
-
     return (
-        <div className="w-[30rem] h-[30rem]" onMouseEnter={showTooltip} onMouseLeave={hideTooltip}>
-            <div>
-                {tooltipVisibility && <StatTooltip columnData={currentColumn} statName={fixedSettings} mouseCoords={mouseCoords} target={defender}></StatTooltip>}
-            </div>
-            <div className="w-[30rem] h-[30rem] flex-row flex">
-                {lineSettings.map((line) =>
-                    <HPLine
-                        maxDmg={maxDmg}
-                        defenderHP={defender.calcData.stats.hp}
-                        fraction={line}>
-                    </HPLine>
-                )}
-                {Object.keys(graphData).map((calc: keyof GraphColumns) => {
-                    return (
-                        <div className={`bg-red-400 w-[100%] flex flex-col hover:border-l hover:border-r`}>
-                            <div onMouseMove={(e) => handleGraphHover(e, graphData[calc])}
-                                className="w-[100%]"
-                                style={{ height: 100 * ((maxDmg * overheadMargin) - graphData[calc].calcs.high) / (maxDmg * overheadMargin) + "%", bottom: 0, position: "relative" }}></div>
+        <ThemeContainer direction={"flex-row justify-center"}>
+            <div className="w-[100%] h-[100%] max-w-[70vh] max-h-[70vh]">
+                <div className="w-[100%] h-[100%] flex flex-row">
+                    <div className="flex self-center w-6">
+                        <span className="break-all [writing-mode:vertical-lr] rotate-180">{"< Damage >"}</span>
+                    </div>
+                    <div className="w-[100%] self-stretch relative overflow-clip">
+                        {!(!move || move.category == "Status") &&
+                            <div className="w-[100%] aspect-square absolute pointer-events-none pl-3">
+                                {
+                                    (Object.keys(lineIndicators)).map((fraction) => {
+                                        if (lineIndicators[fraction]) {
+                                            return <HPLine
+                                                maxDmg={maxDmg}
+                                                defenderHP={defender.calcData.stats.hp}
+                                                fraction={parseInt(fraction)}
+                                                overheadMargin={overheadMargin}>
+                                            </HPLine>
+                                        }
+                                    })
+                                }
+                            </div>
+                        }
+                        <div className="w-[100%] aspect-square flex-row flex pl-12 relative">
+                            {Object.keys(graphData).map((calc: keyof GraphColumns) => {
+                                return (
+                                    <div className={`bg-red-400 w-[100%] flex flex-col hover:border-l hover:border-r`} >
+                                        <div onMouseMove={(e) => handleGraphHover(e, graphData[calc])}
+                                            className="w-[100%]"
+                                            style={{ height: 100 * ((maxDmg * overheadMargin) - graphData[calc].calcs.high) / (maxDmg * overheadMargin) + "%", bottom: 0, position: "relative" }}></div>
 
-                            <div onMouseMove={(e) => handleGraphHover(e, graphData[calc])}
-                                className="bg-yellow-400 w-[100%]"
-                                style={{ height: 100 * (graphData[calc].calcs.high - graphData[calc].calcs.low) / (maxDmg * overheadMargin) + "%", bottom: 0, position: "relative" }}></div>
+                                        <div
+                                            onMouseMove={(e) => handleGraphHover(e, graphData[calc])}
+                                            className="bg-yellow-400 w-[100%]"
+                                            style={{ height: 100 * (graphData[calc].calcs.high - graphData[calc].calcs.low) / (maxDmg * overheadMargin) + "%", bottom: 0, position: "relative" }}></div>
 
-                            <div onMouseMove={(e) => handleGraphHover(e, graphData[calc])}
-                                className="bg-green-400 w-[100%]"
-                                style={{ height: 100 * (graphData[calc].calcs.low) / (maxDmg * overheadMargin) + "%", bottom: 0, position: "relative" }}></div>
+                                        <div
+                                            onMouseMove={(e) => handleGraphHover(e, graphData[calc])}
+                                            className="bg-green-400 w-[100%]"
+                                            style={{ height: 100 * (graphData[calc].calcs.low) / (maxDmg * overheadMargin) + "%", bottom: 0, position: "relative" }}></div>
+                                    </div>
+                                );
+                            })}
                         </div>
-                    );
-                })}
+                    </div>
+                </div>
+                <StatTooltip
+                    columnData={currentColumn}
+                    statName={getIndependentEV()}
+                    mouseCoords={mouseCoords}
+                    target={defender}
+                >
+                </StatTooltip>
+                <div className="w-100% flex self-center h-6 pl-[4.5rem]">
+                    <span>{`< ${getIndependentEV()[0].toUpperCase() + getIndependentEV().slice(1)} Evs >`}</span>
+                </div>
             </div>
-        </div >
-    );
-}
-
-
-interface HPLineProps {
-    maxDmg: number;
-    defenderHP: number;
-    fraction: number;
-}
-
-function HPLine({ maxDmg, defenderHP, fraction }: HPLineProps) {
-    return (
-        <div className="w-[30rem] h-[30rem] z-10 absolute pointer-events-none">
-            <div className="w-[100%] absolute opacity-70 bg-red-800"
-                style={{
-                    height: (100 / maxDmg * overheadMargin) + "%",
-                    bottom: 100 * (defenderHP) / (maxDmg * overheadMargin) * (fraction / 16) + "%"
-                }}>
-            </div>
-        </div>
+        </ThemeContainer>
     )
+
 }

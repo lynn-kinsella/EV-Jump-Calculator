@@ -6,7 +6,7 @@ import { PokemonProps } from "./IntrinsicPokemon";
 
 export function Pokedex({ pkmn, updatePkmn }: PokemonProps) {
     return (
-        <div className="w-20 flex flex-col gap-0.5 shrink-0">
+        <div className="flex flex-col gap-0.5 w-[100%]">
             {/* Sprite */}
             <Sprite url={Sprites.getPokemon(pkmn.calcData.name, { gen: 9 }).url} spriteName={pkmn.calcData.name}></Sprite>
             {/* Pokemon Selector */}
@@ -20,9 +20,9 @@ interface SpriteProps {
 }
 function Sprite({ url }: SpriteProps) {
     return (
-        <div className="flex flex-row justify-center items-end w-[100%] h-[100%] bg-white border border-gray-300">
-            <div className="flex justify-center w-[100%] p-1">
-                <img className="" src={url} alt="" />
+        <div className="flex flex-row justify-center items-end h-[100%] bg-white border border-gray-300">
+            <div className="flex justify-center p-1 h-[100%] w-[100%]">
+                <div className="w-[100%] h-[100%] bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url(${url})` }} />
             </div>
         </div>
     );

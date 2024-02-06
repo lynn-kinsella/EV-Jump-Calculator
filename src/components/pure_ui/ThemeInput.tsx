@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ContainerProps } from "./ThemeContainer";
 import { PokemonProps } from "./IntrinsicPokemon";
-import { Dex, Item } from "@pkmn/dex";
-import { SelectedPokemon } from "../../util/SelectedPokemon";
-import { ItemFilter, applyItemFilters, checkValueTrue, filters, getAllItems } from "./ItemSelect";
-import { Pokemon } from "@smogon/calc";
+import { Dex } from "@pkmn/dex";
+import { applyItemFilters, filters, getAllItems } from "./ItemSelect";
 
 interface SelectInputProps extends ContainerProps {
-    value: string | number;
+    value?: string | number;
     handleChange: (e?: any) => void;
     size?: "sm" | "md";
     width?: string;
@@ -116,3 +114,15 @@ export function ThemeCheck({ state, updateState }: ThemeCheckInterface) {
     )
 }
 
+interface ThemeRadioInterface {
+    state: boolean;
+    updateState: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    name: string;
+    value: string;
+}
+
+export function ThemeRadio({ state, updateState, name, value }: ThemeRadioInterface) {
+    return (
+        <input type="radio" name={name} value={value} checked={state} onChange={updateState} />
+    )
+}

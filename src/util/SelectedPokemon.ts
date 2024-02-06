@@ -9,7 +9,7 @@ export class SelectedPokemon {
     constructor();
     constructor(name: string);
     constructor(name?: string) {
-        this.calcData = new Pokemon(9, "Bulbasaur");
+        this.calcData = new Pokemon(9, "Bulbasaur", { level: 50 });
         this.speciesData = Dex.forGen(9).species.get("Bulbasaur");
         if (name) {
             this.createSelectedPokemon(name);
@@ -32,9 +32,8 @@ export class SelectedPokemon {
     }
 
     clone(): SelectedPokemon {
-        const clone = new SelectedPokemon()
-        clone.calcData = this.calcData;
-        clone.speciesData = this.speciesData;
+        const clone = new SelectedPokemon(this.speciesData.name)
+        clone.calcData = this.calcData.clone();
         return clone;
     }
 
@@ -119,7 +118,7 @@ export class SelectedPokemon {
         return rawStat;
     }
 
-    private calcStatWrapper(statName: StatID): number {
+    calcStatWrapper(statName: StatID): number {
         let rawStat = Stats.calcStat(
             Generations.get(9),
             statName,
