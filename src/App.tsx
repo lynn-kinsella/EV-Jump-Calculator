@@ -1,8 +1,9 @@
 import Layout from './components/Layout';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
-import Welcome from './pages/welcome/Welcome';
+import { Analytics } from '@vercel/analytics/react';
 
+import Welcome from './pages/welcome/Welcome';
 // import Welcome from './pages/welcome/Welcome';
 // import EVCalcs from './pages/evCalcs/EVCalcs';
 // import ErrorPage from './pages/error/ErrorPage';
@@ -27,6 +28,7 @@ function App() {
           <Route path="/calculator" element={<Suspense><EVCalcs></EVCalcs></Suspense>}></Route>
           <Route path="*" element={<Suspense><ErrorPage updatePage={() => { }}></ErrorPage></Suspense>}></Route>
         </Routes>
+        <Analytics></Analytics>
       </Layout>
     </BrowserRouter>
   )
