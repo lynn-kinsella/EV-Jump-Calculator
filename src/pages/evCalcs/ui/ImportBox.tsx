@@ -1,5 +1,5 @@
 import React, { SetStateAction, useState } from "react";
-import { ThemeRow } from "./ThemeContainer";
+import { ThemeRow } from "../../../components/ThemeContainer";
 import SelectedPokemon from "../util/SelectedPokemon";
 import { ThemeSubmit } from "./ThemeInput";
 

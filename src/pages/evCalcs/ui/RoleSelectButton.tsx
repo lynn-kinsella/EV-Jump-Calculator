@@ -1,4 +1,4 @@
-import { ContainerProps } from "./ThemeContainer";
+import { ContainerProps } from "../../../components/ThemeContainer";
 
 interface RoleSelectButtonProps extends ContainerProps {
     clickAction?: () => void;

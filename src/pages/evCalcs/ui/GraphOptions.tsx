@@ -1,4 +1,4 @@
-import { ContainerProps, ThemeContainer, ThemeRow } from "./ThemeContainer";
+import { ContainerProps, ThemeContainer, ThemeRow } from "../../../components/ThemeContainer";
 import React from "react";
 import { ThemeCheck, ThemeInputGroup, ThemeRadio } from "./ThemeInput";
 import { FixedStat, LineIndicators } from "./GraphContainer";

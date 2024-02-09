@@ -2,7 +2,7 @@ import React, { SetStateAction, useEffect, useRef, useState } from "react";
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { StatID } from "@pkmn/dex";
 import { PokemonProps } from "./IntrinsicPokemon";
-import { ThemeRow } from "./ThemeContainer";
+import { ThemeRow } from "../../../components/ThemeContainer";
 import { evsToPoints, pointsToEVs } from "../util/PokeCalcs";
 
 interface EVSliderProps extends PokemonProps {

@@ -4,7 +4,7 @@ import { Field, Generations, calculate, Move as CalcMove } from "@smogon/calc";
 import { useEffect, useState } from "react";
 import { pointsToEVs } from "../util/PokeCalcs";
 import { StatTooltip } from "./StatTooltip";
-import { ThemeContainer } from "./ThemeContainer";
+import { ThemeContainer } from "../../../components/ThemeContainer";
 import { HPLine } from "./HPLine";
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 

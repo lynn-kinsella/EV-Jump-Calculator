@@ -1,5 +1,5 @@
 import React from "react";
-import { ContainerProps, ThemeRow } from "./ThemeContainer";
+import { ContainerProps, ThemeRow } from "../../../components/ThemeContainer";
 import { PokemonProps } from "./IntrinsicPokemon";
 import { NatureName, StatID } from "@pkmn/dex";
 import { ThemeInputGroup, ThemeSelect, ThemeText } from "./ThemeInput";

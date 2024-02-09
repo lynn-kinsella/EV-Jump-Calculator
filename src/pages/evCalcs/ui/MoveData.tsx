@@ -1,4 +1,4 @@
-import { ThemeContainer, ThemeRow } from "./ThemeContainer";
+import { ThemeContainer, ThemeRow } from "../../../components/ThemeContainer";
 import React, { Suspense, useEffect, useState } from "react";
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { Move, Learnset } from "@pkmn/dex";

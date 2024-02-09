@@ -1,5 +1,5 @@
 import React from "react";
-import { ContainerProps } from "./ThemeContainer";
+import { ContainerProps } from "../../../components/ThemeContainer";
 
 interface ThemeInputProps extends ContainerProps {
     width?: string;

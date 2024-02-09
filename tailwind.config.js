@@ -28,7 +28,8 @@ export default {
       green: { "400": "#7DE8A8" },
       gray: { "400": "#B6B6B6" },
       pink: { "200": "#f5d0fe", "400": "#e879f9" },
-      white: "white"
+      white: "white",
+      black: "black"
     },
     extend: {},
   },

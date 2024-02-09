@@ -1,4 +1,4 @@
-import { ContainerProps, ThemeContainer, ThemeRow } from "./ThemeContainer";
+import { ContainerProps, ThemeContainer, ThemeRow } from "../../../components/ThemeContainer";
 import React, { useState } from "react";
 import { Field } from "@smogon/calc";
 import { ThemeCheck, ThemeInputGroup, ThemeRadio } from "./ThemeInput";

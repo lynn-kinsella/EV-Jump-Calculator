@@ -2,7 +2,7 @@ import { useState, lazy, Suspense, useEffect } from "react";
 import { Field } from "@smogon/calc";
 import { Move } from "@pkmn/dex";
 import { SelectedPokemonInterface } from "./util/SelectedPokemon";
-import { ColumnContainer, ThemeContainer } from "./ui/ThemeContainer";
+import { ColumnContainer, ThemeContainer } from "../../components/ThemeContainer";
 
 const PokemonData = lazy(() => import("./ui/PokemonData"));
 const FieldData = lazy(() => import("./ui/FieldData"));

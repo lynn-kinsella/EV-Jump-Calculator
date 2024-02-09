@@ -2,17 +2,16 @@ export interface ContainerProps {
     children?: JSX.Element | JSX.Element[] | string | number | boolean;
 }
 
-export interface ThemeContainerProps extends ContainerProps {
-    direction: string;
-}
-
-
 export function ColumnContainer({ children }: ContainerProps) {
     return (
-        <div className="flex flex-col px-5 gap-2 items-center w-[100%] min-h-[100vh]">
+        <div className="flex flex-col px-5 gap-2 items-center w-[100%]">
             {children}
         </div>
     );
+}
+
+export interface ThemeContainerProps extends ContainerProps {
+    direction: string;
 }
 
 export function ThemeContainer({ children, direction }: ThemeContainerProps) {
