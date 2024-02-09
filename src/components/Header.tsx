@@ -3,7 +3,7 @@ import silkendev from "../assets/silkendev.svg"
 
 export function Header() {
     return (
-        <div className="flex flex-row h-32 pt-5 px-5">
+        <div className="flex flex-row sm:justify-left justify-center h-32 pt-5 px-5">
             <LogoBadge></LogoBadge>
         </div>
     );
