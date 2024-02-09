@@ -1,12 +1,13 @@
 import Layout from './components/Layout';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
+import Welcome from './pages/welcome/Welcome';
 
 // import Welcome from './pages/welcome/Welcome';
 // import EVCalcs from './pages/evCalcs/EVCalcs';
 // import ErrorPage from './pages/error/ErrorPage';
 
-const Welcome = lazy(() => import("./pages/welcome/Welcome"));
+// const Welcome = lazy(() => import("./pages/welcome/Welcome"));
 const EVCalcs = lazy(() => import("./pages/evCalcs/EVCalcs"));
 const ErrorPage = lazy(() => import("./pages/error/ErrorPage"));
 
