@@ -10,11 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@pkmn/data": "^0.8.7",
     "@pkmn/dex": "^0.8.6",
     "@pkmn/img": "^0.2.23",
+    "@pkmn/sets": "^5.1.2",
     "@smogon/calc": "^0.9.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
