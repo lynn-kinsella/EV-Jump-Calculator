@@ -1,5 +1,5 @@
 import React, { SetStateAction, useEffect, useRef, useState } from "react";
-import SelectedPokemon, { SelectedPokemonInterface } from "../util/SelectedPokemon";
+import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { StatID } from "@pkmn/dex";
 import { PokemonProps } from "./IntrinsicPokemon";
 import { ThemeRow } from "./ThemeContainer";

@@ -1,7 +1,8 @@
 import React from "react";
-import { ItemSelectGroup, ThemeCheck, ThemeInputGroup, ThemeInputGroupMulti, ThemeSelect } from "./ThemeInput";
+import { ThemeCheck, ThemeInputGroup, ThemeInputGroupMulti, ThemeSelect } from "./ThemeInput";
 import { AbilityName, Dex, Nature, NatureName, Type, TypeName } from "@pkmn/dex";
 import { PokemonProps } from "./IntrinsicPokemon";
+import { ItemSelectGroup } from "./ItemSelect";
 
 export function PokemonOptions({ pkmn, updatePkmn }: PokemonProps) {
 

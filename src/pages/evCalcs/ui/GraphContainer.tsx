@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useState } from "react";
-import SelectedPokemon, { SelectedPokemonInterface } from "../util/SelectedPokemon";
+import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { Field } from "@smogon/calc";
 import { Move, StatID } from "@pkmn/dex";
 import { GraphOptions } from "./GraphOptions";

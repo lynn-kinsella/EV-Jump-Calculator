@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ContainerProps } from "./ThemeContainer";
-import { PokemonProps } from "./IntrinsicPokemon";
-import { Dex } from "@pkmn/dex";
-import { applyItemFilters, filters, getAllItems } from "./ItemSelect";
 
 interface ThemeInputProps extends ContainerProps {
     width?: string;
@@ -62,49 +59,6 @@ export function ThemeInputGroupMulti({ children, width }: ThemeInputProps) {
         <div className={twStyle}>
             {children}
         </div>
-    )
-}
-
-interface ItemSelectGroupProps extends PokemonProps {
-    size?: "sm" | "md";
-    width?: string
-}
-
-export function ItemSelectGroup({ pkmn, updatePkmn, size = "md", width }: ItemSelectGroupProps) {
-    const [filter, setFilter] = useState<number>(0);
-
-    function handleUpdateFilter(e: React.ChangeEvent<HTMLSelectElement>) {
-        const index: number = parseInt(e.target.value);
-        setFilter(index);
-    }
-
-    function handleChangeItem(e: React.ChangeEvent<HTMLSelectElement>) {
-        pkmn.updateItem(Dex.forGen(9).items.get(e.target.value));
-        updatePkmn(pkmn);
-    }
-
-    useEffect(() => {
-        setFilter(0);
-    }, [pkmn])
-
-    return (
-        <ThemeInputGroupMulti width={width} id={"itemOptions"}>
-            <ThemeInputGroup width={width} label={"Item: "} id={"item"}>
-                <ThemeSelect id="item" value={pkmn.calcData.item ? pkmn.calcData.item : ""} handleChange={handleChangeItem} size={size}>
-                    {[<option value={-1}>None</option>
-                        , ...(applyItemFilters(getAllItems(pkmn), filters[filter]))
-                            .map((item) =>
-                                <option value={item.name}>{item.name}</option>)]}
-                </ThemeSelect>
-            </ThemeInputGroup>
-
-            <ThemeInputGroup width={width} label={"Filter: "} id={"itemFilters"}>
-                <ThemeSelect value={filter} handleChange={handleUpdateFilter} size={size} id={"itemFilters"}>
-                    {filters.map((filter, idx) => <option value={idx}>{filter.name}</option>)}
-                </ThemeSelect>
-            </ThemeInputGroup>
-
-        </ThemeInputGroupMulti >
     )
 }
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ThemeContainer, ThemeRow } from "./ThemeContainer";
-import SelectedPokemon, { SelectedPokemonInterface } from "../util/SelectedPokemon";
+import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { IntrinsicPokemon } from "./IntrinsicPokemon";
 import { StatTable } from "./StatTable";
 import { RoleRow } from "./RoleRow";

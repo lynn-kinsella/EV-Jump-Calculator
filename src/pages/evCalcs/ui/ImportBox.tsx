@@ -1,8 +1,6 @@
 import React, { SetStateAction, useState } from "react";
 import { ThemeRow } from "./ThemeContainer";
 import SelectedPokemon from "../util/SelectedPokemon";
-import { Dex } from "@pkmn/dex";
-import { Sets } from "@pkmn/sets";
 import { ThemeSubmit } from "./ThemeInput";
 
 interface ImportBoxProps {
@@ -17,53 +15,58 @@ export function ImportBox({ setImportMode, updatePkmn }: ImportBoxProps) {
     }
 
     function handleSubmitImport() {
-        const set = Sets.importSet(currentPaste);
-        if (set && set.species) {
-            var newPkmn = new SelectedPokemon(set.species);
-            if (set.evs) {
-                newPkmn.updateEVs("hp", set.evs.hp);
-                newPkmn.updateEVs("atk", set.evs.atk);
-                newPkmn.updateEVs("def", set.evs.def);
-                newPkmn.updateEVs("spa", set.evs.spa);
-                newPkmn.updateEVs("spd", set.evs.spd);
-                newPkmn.updateEVs("spe", set.evs.spe);
-            }
+        import("@pkmn/dex").then((dexModule) => {
+            const gen9Dex = dexModule.Dex.forGen(9);
+            import("@pkmn/sets").then((setModule) => {
+                const set = setModule.Sets.importSet(currentPaste);
+                if (set && set.species) {
+                    var newPkmn = new SelectedPokemon(set.species);
+                    if (set.evs) {
+                        newPkmn.updateEVs("hp", set.evs.hp);
+                        newPkmn.updateEVs("atk", set.evs.atk);
+                        newPkmn.updateEVs("def", set.evs.def);
+                        newPkmn.updateEVs("spa", set.evs.spa);
+                        newPkmn.updateEVs("spd", set.evs.spd);
+                        newPkmn.updateEVs("spe", set.evs.spe);
+                    }
 
-            if (set.ivs) {
-                newPkmn.updateIVs("hp", set.ivs.hp);
-                newPkmn.updateIVs("atk", set.ivs.atk);
-                newPkmn.updateIVs("def", set.ivs.def);
-                newPkmn.updateIVs("spa", set.ivs.spa);
-                newPkmn.updateIVs("spd", set.ivs.spd);
-                newPkmn.updateIVs("spe", set.ivs.spe);
-            }
+                    if (set.ivs) {
+                        newPkmn.updateIVs("hp", set.ivs.hp);
+                        newPkmn.updateIVs("atk", set.ivs.atk);
+                        newPkmn.updateIVs("def", set.ivs.def);
+                        newPkmn.updateIVs("spa", set.ivs.spa);
+                        newPkmn.updateIVs("spd", set.ivs.spd);
+                        newPkmn.updateIVs("spe", set.ivs.spe);
+                    }
 
-            if (set.item) {
-                newPkmn.updateItem(Dex.forGen(9).items.get(set.item));
-            }
+                    if (set.item) {
+                        newPkmn.updateItem(gen9Dex.items.get(set.item));
+                    }
 
-            if (set.nature) {
-                newPkmn.updateNature(Dex.forGen(9).natures.get(set.nature).name);
-            }
+                    if (set.nature) {
+                        newPkmn.updateNature(gen9Dex.natures.get(set.nature).name);
+                    }
 
-            if (set.ability) {
-                newPkmn.updateAbility(Dex.forGen(9).abilities.get(set.ability).name);
-            }
+                    if (set.ability) {
+                        newPkmn.updateAbility(gen9Dex.abilities.get(set.ability).name);
+                    }
 
-            if (set.teraType) {
-                newPkmn.updateTera(Dex.forGen(9).types.get(set.teraType).name);
-            }
+                    if (set.teraType) {
+                        newPkmn.updateTera(gen9Dex.types.get(set.teraType).name);
+                    }
 
-            if (set.moves) {
-                newPkmn.moves = set.moves;
-            }
+                    if (set.moves) {
+                        newPkmn.moves = set.moves;
+                    }
 
-            updatePkmn(newPkmn);
-            handleChangeImportMode();
-        }
-        else {
-            alert("Error importing set");
-        }
+                    updatePkmn(newPkmn);
+                    handleChangeImportMode();
+                }
+                else {
+                    alert("Error importing set");
+                }
+            })
+        })
     }
 
     return (

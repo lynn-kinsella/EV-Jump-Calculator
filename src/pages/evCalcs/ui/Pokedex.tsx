@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Sprites } from "@pkmn/img";
-import { Dex } from "@pkmn/dex";
+import { ModdedDex, Species } from "@pkmn/dex";
 import { ThemeInputGroup, ThemeSelect } from "./ThemeInput";
 import { PokemonProps } from "./IntrinsicPokemon";
 
@@ -28,11 +28,27 @@ function Sprite({ url }: SpriteProps) {
     );
 }
 function PokemonSelector({ pkmn, updatePkmn }: PokemonProps) {
-    const filteredDex = (Dex.forGen(9).species.all()).filter((mon) => !mon.isNonstandard && !mon.name.includes("Pikachu-"));
+    const [gen9Dex, setGen9Dex] = useState<ModdedDex>()
+    const [filteredDex, setFilteredDex] = useState<Species[]>([])
+
+    useEffect(() => {
+        import("@pkmn/dex").then((module) => {
+            setGen9Dex(module.Dex.forGen(9));
+            setFilteredDex(getFilteredDex(module.Dex.forGen(9)))
+        }
+        );
+    }, [])
+
+
+    function getFilteredDex(dex: ModdedDex): Species[] {
+        return dex.species.all().filter((mon) => !mon.isNonstandard && !mon.name.includes("Pikachu-"));
+    }
 
     function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        pkmn.updateSpecies(Dex.forGen(9).species.get(e.target.value));
-        updatePkmn(pkmn);
+        if (gen9Dex) {
+            pkmn.updateSpecies(gen9Dex.species.get(e.target.value));
+            updatePkmn(pkmn);
+        }
     }
 
     return (
