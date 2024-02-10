@@ -1,5 +1,5 @@
 import React, { SetStateAction } from "react";
-import { ThemeRow } from "./ThemeContainer";
+import { ThemeRow } from "../../../components/ThemeContainer";
 import { RoleSelectButton } from "./RoleSelectButton";
 
 interface RoleRowProps {

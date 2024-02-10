@@ -1,10 +1,12 @@
 import { Move, NatureName, StatID } from "@pkmn/dex";
 import { FixedStat, LineIndicators } from "./GraphContainer";
 import { Field, Generations, calculate, Move as CalcMove } from "@smogon/calc";
+
+import { computeFinalStats } from "@smogon/calc/dist/mechanics/util";
 import { useEffect, useState } from "react";
 import { pointsToEVs } from "../util/PokeCalcs";
 import { StatTooltip } from "./StatTooltip";
-import { ThemeContainer } from "./ThemeContainer";
+import { ThemeContainer } from "../../../components/ThemeContainer";
 import { HPLine } from "./HPLine";
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 
@@ -78,18 +80,22 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
             setGraphData({ "-1": { inputStats: [{ stat: -1, nature: " ", evs: 0, ivs: 0 }], calcs: { low: 0, high: 0 } } });
             return
         }
-        var workingAttacker = attacker.clone();
-        var workingDefender = defender.clone();
+        var workingPokemon: SelectedPokemonInterface[] = [attacker.clone(), defender.clone()]
         var variedPokemon: SelectedPokemonInterface;
         var natureOptions: NatureMod[];
         var variedStat: Exclude<StatID, "hp"> = getIndependentEV();
+        var offenseStat: StatID = move.category == "Physical" ? "atk" : "spa";
+        var defenseStat: StatID = move.category == "Physical" ? "def" : "spd";
+        if (move.name == "Body Press") {
+            offenseStat = "def";
+        }
 
         if (fixedStat == "def") {
-            variedPokemon = workingAttacker;
+            variedPokemon = workingPokemon[0];
             natureOptions = [" ", "+"];
         }
         else {
-            variedPokemon = workingDefender;
+            variedPokemon = workingPokemon[1];
             natureOptions = ["-", " ", "+"];
         }
 
@@ -101,8 +107,18 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
         natureOptions.forEach((natureType: NatureMod) => {
             variedPokemon.updateNature(keyNatures[variedStat][natureType]);
             for (var i = 0; i < 33; i++) {
-                variedPokemon.updateEVs(variedStat, pointsToEVs(i))
-                statValue = variedPokemon.calcStatWrapper(variedStat)
+                variedPokemon.updateEVs(variedStat, pointsToEVs(i));
+
+                variedPokemon.calcAllStats();
+                // @ts-ignore -- computeFinalStats uses src/Pokemon instead of dist/Pokemon
+                computeFinalStats(Generations.get(9), workingPokemon[0].calcData, workingPokemon[1].calcData,
+                    field, offenseStat);
+                // @ts-ignore -- computeFinalStats uses src/Pokemon instead of dist/Pokemon
+                computeFinalStats(Generations.get(9), workingPokemon[0].calcData, workingPokemon[1].calcData,
+                    field, defenseStat);
+
+                statValue = variedPokemon.calcData.stats[variedStat];
+
                 const inputStats: InputStats = {
                     stat: statValue,
                     nature: natureType,
@@ -111,8 +127,8 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
                 }
                 if (!data[statValue]) {
                     const result = calculate(gen,
-                        workingAttacker.calcData,
-                        workingDefender.calcData,
+                        workingPokemon[0].calcData,
+                        workingPokemon[1].calcData,
                         new CalcMove(gen, move.name),
                         field
                     );
@@ -128,7 +144,7 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
         })
         setMaxDmg(
             Math.max(
-                workingDefender.calcData.stats.hp,
+                workingPokemon[1].calcData.stats.hp,
                 Object.values(data).
                     reduce((acc: number, cur: ColumnData) => Math.max(acc, cur.calcs.high), 0)
             )
@@ -150,11 +166,16 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
     }
 
     function getIndependentEV(): Exclude<StatID, "hp"> {
-        if (move?.category == "Physical") {
-            return fixedStat == "def" ? "atk" : "def";
+        if (move?.name == "Body Press") {
+            return "def";
         }
         else {
-            return fixedStat == "def" ? "spa" : "spd";
+            if (move?.category == "Physical") {
+                return fixedStat == "def" ? "atk" : "def";
+            }
+            else {
+                return fixedStat == "def" ? "spa" : "spd";
+            }
         }
     }
 
@@ -187,7 +208,7 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
                             <div className="w-[100%] h-[100%] border border-black relative flex-row flex rounded-md overflow-clip">
                                 {Object.keys(graphData).map((calc: keyof GraphColumns) => {
                                     return (
-                                        <div className={`bg-red-400 w-[100%] flex flex-col hover:border-l hover:border-r`}
+                                        <div className={`bg-red-400 w-[100%] flex flex-col hover:border-l hover:border-r hover:border-yellow-100`}
                                             onMouseEnter={showTooltip}
                                             onMouseLeave={hideTooltip}>
                                             <div onMouseMove={(e) => handleGraphHover(e, graphData[calc])}

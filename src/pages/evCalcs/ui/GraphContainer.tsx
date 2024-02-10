@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { Field } from "@smogon/calc";
 import { Move, StatID } from "@pkmn/dex";
@@ -20,7 +20,7 @@ interface GraphContainerProps {
     field: Field;
 }
 export default function GraphFeature({ attacker, defender, move, field }: GraphContainerProps) {
-    const [lineIndicators, setLineIndicators] = useState<LineIndicators>({ 16: true });
+    const [lineIndicators, setLineIndicators] = useState<LineIndicators>({ 10000: true });
     const [fixedStat, setFixedStat] = useState<FixedStat>("atk");
 
     const [workingAttacker, setWorkingAttacker] = useState<SelectedPokemonInterface>(attacker.clone());
@@ -49,11 +49,16 @@ export default function GraphFeature({ attacker, defender, move, field }: GraphC
     }
 
     function getFixedEV(): Exclude<StatID, "hp"> {
-        if (move?.category == "Physical") {
-            return fixedStat == "atk" ? "atk" : "def";
+        if (move?.name == "Body Press") {
+            return "def";
         }
         else {
-            return fixedStat == "atk" ? "spa" : "spd";
+            if (move?.category == "Physical") {
+                return fixedStat == "atk" ? "atk" : "def";
+            }
+            else {
+                return fixedStat == "atk" ? "spa" : "spd";
+            }
         }
     }
 
@@ -72,9 +77,7 @@ export default function GraphFeature({ attacker, defender, move, field }: GraphC
                 }
             </GraphOptions>
             {/* Graph */}
-            <Suspense>
-                <Graph attacker={workingAttacker} defender={workingDefender} move={move} fixedStat={fixedStat} lineIndicators={lineIndicators} field={field}></Graph>
-            </Suspense>
+            <Graph attacker={workingAttacker} defender={workingDefender} move={move} fixedStat={fixedStat} lineIndicators={lineIndicators} field={field}></Graph>
         </div>
     );
 }

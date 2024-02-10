@@ -1,4 +1,4 @@
-import { ContainerProps, ThemeContainer, ThemeRow } from "./ThemeContainer";
+import { ContainerProps, ThemeContainer, ThemeRow } from "../../../components/ThemeContainer";
 import React, { useState } from "react";
 import { Field } from "@smogon/calc";
 import { ThemeCheck, ThemeInputGroup, ThemeRadio } from "./ThemeInput";
@@ -81,7 +81,6 @@ export default function FieldData({ field, updateField }: FieldDataProps) {
         field.attackerSide.isPowerSpot = e.target.checked;
         updateField(field);
     }
-
 
     return (
         <ThemeContainer direction={"flex-col"}>
