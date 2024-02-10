@@ -1,11 +1,11 @@
 import React, { SetStateAction, useState } from "react";
 import { ThemeRow } from "../../../components/ThemeContainer";
-import SelectedPokemon from "../util/SelectedPokemon";
+import SelectedPokemon, { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { ThemeSubmit } from "./ThemeInput";
 
 interface ImportBoxProps {
     setImportMode: React.Dispatch<SetStateAction<boolean>>;
-    updatePkmn: (pkmn: SelectedPokemon) => void;
+    updatePkmn: (pkmn: SelectedPokemonInterface) => void;
 }
 export function ImportBox({ setImportMode, updatePkmn }: ImportBoxProps) {
     const [currentPaste, setCurrentPaste] = useState<string>("");
