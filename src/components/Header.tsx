@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import silkendev from "../assets/silkendev.svg"
+import ReactComponent from "../assets/silkendev.svg";
 
 export function Header() {
     return (
@@ -13,7 +14,9 @@ function LogoBadge({ }) {
     return (
         <Link to="/"
             className="py-4 px-5 cursor-pointer border border-black rounded-2xl h-[100%] bg-gradient-to-t to-white from-yellow-100">
-            <img className="h-[100%]" src={silkendev} loading="eager" alt="logo" />
+            {/* <img className="h-[100%]" src={silkendev} loading="eager" alt="logo" /> */}
+            <ReactComponent></ReactComponent>
+
         </Link>
     )
 }
