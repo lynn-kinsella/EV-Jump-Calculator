@@ -2,14 +2,17 @@ import { ThemeContainer, ThemeRow } from "../../../components/ThemeContainer";
 import React, { Suspense, useEffect, useState } from "react";
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { Move, Learnset } from "@pkmn/dex";
-import { ThemeInputGroup, ThemeSelect } from "./ThemeInput";
+import { ThemeInputGroup, ThemeRadio, ThemeSelect } from "./ThemeInput";
+import { Field } from "@smogon/calc";
 
 interface MoveDataProps {
     pkmn: SelectedPokemonInterface;
     updateMove: (newMove: Move) => void;
     move: Move | undefined;
+    field: Field;
+    updateField: (newField: Field) => void;
 }
-export default function MoveData({ updateMove, move, pkmn }: MoveDataProps) {
+export default function MoveData({ updateMove, move, pkmn, field, updateField }: MoveDataProps) {
     const [moveCategory, setMoveCategory] = useState<"All" | "Special" | "Physical" | "Set">("All");
 
     function handleCategoryChange(attackCategory: "All" | "Special" | "Physical" | "Set") {
@@ -19,6 +22,12 @@ export default function MoveData({ updateMove, move, pkmn }: MoveDataProps) {
     function handleUpdateMove(newAttack: Move) {
         updateMove(newAttack);
     }
+
+    function handleUpdateGameType(isDoubles: boolean) {
+        field.gameType = isDoubles ? "Doubles" : "Singles";
+        updateField(field);
+    }
+
     return (
         <ThemeContainer direction={"flex-col"}>
             <ThemeRow justify="justify-between">
@@ -29,6 +38,7 @@ export default function MoveData({ updateMove, move, pkmn }: MoveDataProps) {
                     <MoveList pkmn={pkmn} handleUpdateMove={handleUpdateMove} moveCategory={moveCategory}></MoveList>
                 </Suspense>
                 <MoveCategoryFilter updateCategory={handleCategoryChange}></MoveCategoryFilter>
+                <MoveTargetSelector field={field} handleUpdateGameType={handleUpdateGameType}></MoveTargetSelector>
                 <MoveInfo move={move}></MoveInfo>
             </div>
         </ThemeContainer>
@@ -43,20 +53,25 @@ interface MoveListProps {
 }
 function MoveList({ pkmn, handleUpdateMove, moveCategory }: MoveListProps) {
     const [moves, setMoves] = useState<Move[]>([]);
+    const [index, setIndex] = useState<number>(-1);
 
     useEffect(() => {
         import("@pkmn/dex").then((module) => {
             const gen9Dex = module.Dex.forGen(9);
             if (pkmn.moves && moveCategory == "Set") {
-                setMoves(pkmn.moves.map(learnsetEntry => gen9Dex.moves.get(learnsetEntry)))
+                const newMoves = pkmn.moves.map(learnsetEntry => gen9Dex.moves.get(learnsetEntry));
+                setMoves(newMoves);
+                handleUpdateMove(newMoves[0]);
             }
             else {
                 gen9Dex.learnsets.get(pkmn.speciesData.name)
                     .then((ls: Learnset) => {
                         if (ls.learnset) {
                             let moves = [...Object.keys(ls.learnset)];
-                            setMoves(moves.map(learnsetEntry => gen9Dex.moves.get(learnsetEntry))
-                                .filter((move) => moveCategory == "All" || move.category == moveCategory));
+                            const newMoves = moves.map(learnsetEntry => gen9Dex.moves.get(learnsetEntry))
+                                .filter((move) => moveCategory == "All" || move.category == moveCategory);
+                            setMoves(newMoves);
+                            handleUpdateMove(newMoves[index]);
                         }
                         else {
                             setMoves([]);
@@ -68,13 +83,14 @@ function MoveList({ pkmn, handleUpdateMove, moveCategory }: MoveListProps) {
 
     function handleAttackChange(e: React.ChangeEvent<HTMLSelectElement>) {
         let index = parseInt(e.target.value);
+        setIndex(index);
         handleUpdateMove(moves[index]);
     }
 
     return (
         <ThemeRow>
             <ThemeInputGroup label={"Attack: "} id={"attack"} width="w-[100%]" size="text-lg">
-                <ThemeSelect handleChange={handleAttackChange} id={"attack"}>
+                <ThemeSelect handleChange={handleAttackChange} id={"attack"} value={index}>
                     {moves && [<option value={-1}>Select Move</option>, ...moves.map((mv, idx) => <option value={idx}>{mv.name}</option>)]}
                 </ThemeSelect>
             </ThemeInputGroup>
@@ -82,6 +98,26 @@ function MoveList({ pkmn, handleUpdateMove, moveCategory }: MoveListProps) {
     );
 }
 
+interface MoveTargetSelectorProps {
+    field: Field;
+    handleUpdateGameType: (isDoubles: boolean) => void
+}
+
+function MoveTargetSelector({ field, handleUpdateGameType }: MoveTargetSelectorProps) {
+    return (
+        <ThemeRow>
+            <div className="flex flex-col">
+                <span className="text-lg">Target(s)</span>
+                <ThemeInputGroup label={"Single Target"} id={"singletarget"} width="w-[100%]" size="text-base">
+                    <ThemeRadio state={field.gameType != "Doubles"} updateState={(e) => { handleUpdateGameType(!e.target.checked) }} value={"MultiTarget"} name={"targets"} id={"singletarget"}></ThemeRadio>
+                </ThemeInputGroup>
+                <ThemeInputGroup label={"Multi Target"} id={"multitarget"} width="w-[100%]" size="text-base">
+                    <ThemeRadio state={field.gameType == "Doubles"} updateState={(e) => { handleUpdateGameType(e.target.checked) }} value={"SingleTarget"} name={"targets"} id={"multitarget"}></ThemeRadio>
+                </ThemeInputGroup>
+            </div>
+        </ThemeRow>
+    )
+}
 
 interface MoveCategoryFilterProps {
     updateCategory: (MoveCategory: "All" | "Special" | "Physical" | "Set") => void;
@@ -111,8 +147,8 @@ function MoveInfo({ move }: MoveInfoProps) {
     return (
         <div className="flex flex-col gap-0 pr-4 w-[100%]">
             <ThemeRow>
-                <div className=""><span className="text-lg">Power:</span><span>{move?.basePower}</span></div>
-                <div className=""><span className="text-lg">Type:</span><span>{move?.type}</span></div>
+                <div className=""><span className="text-lg">Power: </span><span>{move?.basePower}</span></div>
+                <div className=""><span className="text-lg">Type: </span><span>{move?.type}</span></div>
             </ThemeRow>
             <ThemeRow>
                 <span className="text-lg">Effect: </span>
