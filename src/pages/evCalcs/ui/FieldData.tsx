@@ -82,7 +82,6 @@ export default function FieldData({ field, updateField }: FieldDataProps) {
         updateField(field);
     }
 
-
     return (
         <ThemeContainer direction={"flex-col"}>
             <ThemeRow justify="justify-between">
