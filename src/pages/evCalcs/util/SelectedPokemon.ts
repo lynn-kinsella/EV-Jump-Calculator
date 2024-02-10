@@ -1,6 +1,5 @@
 import { Species, StatID, NatureName, Item, AbilityName, TypeName, Dex, StatusName } from "@pkmn/dex";
-import { Generations, Stats, StatsTable, Pokemon, Field } from "@smogon/calc";
-import { computeFinalStats } from "@smogon/calc/src/mechanics/util";
+import { Generations, Stats, StatsTable, Pokemon } from "@smogon/calc";
 
 type CalcOptions = Partial<{ level: number, nature: string, abilityOn: boolean, item: string, evs: Partial<StatsTable>, ivs: Partial<StatsTable>, boosts: Partial<StatsTable>, status: StatusName }>
 export interface SelectedPokemonInterface {

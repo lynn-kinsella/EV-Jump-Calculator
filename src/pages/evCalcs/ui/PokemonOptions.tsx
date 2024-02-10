@@ -1,5 +1,5 @@
 import React from "react";
-import { ThemeCheck, ThemeInputGroup, ThemeInputGroupMulti, ThemeSelect } from "./ThemeInput";
+import { ThemeCheck, ThemeInputGroup, ThemeSelect } from "./ThemeInput";
 import { AbilityName, Dex, Nature, NatureName, Type, TypeName } from "@pkmn/dex";
 import { PokemonProps } from "./IntrinsicPokemon";
 import { ItemSelectGroup } from "./ItemSelect";

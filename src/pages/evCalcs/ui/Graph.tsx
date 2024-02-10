@@ -1,8 +1,8 @@
 import { Move, NatureName, StatID } from "@pkmn/dex";
 import { FixedStat, LineIndicators } from "./GraphContainer";
-import { Field, Generations, calculate, Move as CalcMove, STATS, Pokemon } from "@smogon/calc";
+import { Field, Generations, calculate, Move as CalcMove } from "@smogon/calc";
 
-import { computeFinalStats } from "@smogon/calc/src/mechanics/util";
+import { computeFinalStats } from "@smogon/calc/dist/mechanics/util";
 import { useEffect, useState } from "react";
 import { pointsToEVs } from "../util/PokeCalcs";
 import { StatTooltip } from "./StatTooltip";
@@ -84,8 +84,8 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
         var variedPokemon: SelectedPokemonInterface;
         var natureOptions: NatureMod[];
         var variedStat: Exclude<StatID, "hp"> = getIndependentEV();
-        var offenseStat = move.category == "Physical" ? "atk" : "spa";
-        var defenseStat = move.category == "Physical" ? "def" : "spd";
+        var offenseStat: StatID = move.category == "Physical" ? "atk" : "spa";
+        var defenseStat: StatID = move.category == "Physical" ? "def" : "spd";
         if (move.name == "Body Press") {
             offenseStat = "def";
         }
@@ -245,8 +245,4 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
         </ThemeContainer>
     )
 
-}
-
-function calcFinalStats() {
-    throw new Error("Function not implemented.");
 }
