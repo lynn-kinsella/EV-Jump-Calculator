@@ -34,7 +34,7 @@ export function EVSlider({ stat, updatePkmn, referencePkmn }: EVSliderProps) {
 
     useEffect(() => {
         setStatPoints(evsToPoints(referencePkmn.calcData.evs[stat]));
-    }, [referencePkmn.calcData.evs[stat]]);
+    }, [referencePkmn]);
 
     function handleClick(e: React.MouseEvent<HTMLDivElement>) {
         setDragging(true)
