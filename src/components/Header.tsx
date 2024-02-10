@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import silkendev from "../assets/silkendev.svg"
+// import silkendev from "../assets/silkendev.svg"
 import ReactComponent from "../assets/silkendev.svg";
 
 export function Header() {
