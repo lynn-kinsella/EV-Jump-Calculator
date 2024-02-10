@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ContainerProps, ThemeRow } from "../../../components/ThemeContainer";
 import { PokemonProps } from "./IntrinsicPokemon";
 import { NatureName, StatID } from "@pkmn/dex";
@@ -55,12 +55,12 @@ function StatRow({ pkmn, updatePkmn, statName }: StatRowProps) {
 
     function handleIVChange(e: React.ChangeEvent<HTMLInputElement>) {
         var newStat = parseInt(e.target.value);
-
+        newStat = Number.isNaN(newStat) ? 0 : newStat;
         newStat = validateIVs(newStat);
 
         pkmn.updateIVs(statName as StatID, newStat);
         updatePkmn(pkmn);
-        e.target.value = String(newStat);
+        // e.target.value = String(newStat);
     }
 
     function handleBoostChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -123,6 +123,7 @@ interface ThemeStatEntryProps {
 }
 
 function ThemeStatEntry({ type, label, handleUpdate, value, selectOptions }: ThemeStatEntryProps) {
+    const [controlled, setControlled] = useState<boolean>(true);
     return (
         <div className="w-[100%] h-6 text-center">
             <ThemeInputGroup label={label} id={label} hideLabel={true}>
@@ -131,8 +132,9 @@ function ThemeStatEntry({ type, label, handleUpdate, value, selectOptions }: The
                     type == "text" ? <ThemeText align="center"
                         inputMode="numeric"
                         width="w-10"
-                        defaultValue={value}
-                        handleChange={handleUpdate} id={label}>
+                        value={controlled ? value : undefined}
+                        handleFocus={() => { setControlled(false) }}
+                        handleChange={(e) => { handleUpdate(e); setControlled(true); }} id={label}>
                     </ThemeText>
                         :
                         <ThemeSelect width="w-fit"

@@ -24,16 +24,17 @@ export function ThemeSelect({ children, value, handleChange, size = "md", width,
 interface TextInputProps extends ThemeInputProps {
     width?: string;
     align?: "left" | "right" | "center";
-    defaultValue?: string | number;
+    value?: string | number;
     inputMode?: "text" | "numeric";
     handleChange: (e: any) => void;
+    handleFocus?: (e: any) => void;
 }
 
-export function ThemeText({ width, align = "right", defaultValue = "", handleChange, inputMode = "text", id }: TextInputProps) {
+export function ThemeText({ width, align = "right", value, handleChange, handleFocus, inputMode = "text", id }: TextInputProps) {
     const twStyle = `h-6 border-gray-400 border-solid border ${width} text-${align} `
 
     return (
-        <input inputMode={inputMode} className={twStyle} type="text" defaultValue={defaultValue} onBlur={handleChange} id={id} />
+        <input inputMode={inputMode} className={twStyle} type="text" value={value} onBlur={handleChange} onFocus={handleFocus} id={id} />
     )
 }
 
@@ -41,10 +42,11 @@ interface GroupInputProps extends ThemeInputProps {
     hideLabel?: boolean;
     label: string;
     size?: string;
+    direction?: string
 }
 
-export function ThemeInputGroup({ children, width = "", id, label, hideLabel = false, size = "" }: GroupInputProps) {
-    const twStyle = `flex flex-row ${size} ${!hideLabel && "gap-1"} ${width} h-fit`;
+export function ThemeInputGroup({ children, width = "", id, label, hideLabel = false, size = "", direction = "flex-row" }: GroupInputProps) {
+    const twStyle = `flex ${direction} ${size} ${!hideLabel && "gap-1"} ${width} h-fit`;
     return (
         <div className={twStyle}>
             <label htmlFor={id} className={hideLabel ? "max-w-0 overflow-clip" : undefined}>{label}</label>
