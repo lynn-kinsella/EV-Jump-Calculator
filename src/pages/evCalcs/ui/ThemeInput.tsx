@@ -46,7 +46,7 @@ interface GroupInputProps extends ThemeInputProps {
 }
 
 export function ThemeInputGroup({ children, width = "", id, label, hideLabel = false, size = "", direction = "flex-row" }: GroupInputProps) {
-    const twStyle = `flex ${direction} ${size} ${!hideLabel && "gap-1"} ${width} h-fit bg-white`;
+    const twStyle = `flex ${direction} ${size} ${!hideLabel && "gap-1"} ${width} h-fit`;
     return (
         <div className={twStyle}>
             <label htmlFor={id} className={hideLabel ? "max-w-0 overflow-clip" : undefined}>{label}</label>
