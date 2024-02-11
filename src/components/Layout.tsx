@@ -1,11 +1,11 @@
-import { ContainerProps } from "../pages/evCalcs/ui/ThemeContainer";
+import { ContainerProps } from "./ThemeContainer";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 
 function Layout({ children }: ContainerProps) {
     return (
         <>
-            <div className="min-h-[100vh] flex flex-col justify-between sm:px-[20%] gap-2">
+            <div className="min-h-[100vh] h-[100%] w-[100%] flex flex-col gap-2 sm:px-[20%]">
                 <Header></Header>
                 {children}
                 <Footer></Footer>

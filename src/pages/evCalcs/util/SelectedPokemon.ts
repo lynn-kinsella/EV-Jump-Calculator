@@ -1,13 +1,12 @@
-import { Species, StatID, NatureName, Item, AbilityName, TypeName, Dex } from "@pkmn/dex";
+import { Species, StatID, NatureName, Item, AbilityName, TypeName, Dex, StatusName } from "@pkmn/dex";
 import { Generations, Stats, StatsTable, Pokemon } from "@smogon/calc";
 
-
-type CalcOptions = Partial<{ level: number, nature: string, item: string, evs: Partial<StatsTable>, ivs: Partial<StatsTable>, boosts: Partial<StatsTable> }>
+type CalcOptions = Partial<{ level: number, nature: string, abilityOn: boolean, item: string, evs: Partial<StatsTable>, ivs: Partial<StatsTable>, boosts: Partial<StatsTable>, status: StatusName }>
 export interface SelectedPokemonInterface {
     calcData: Pokemon;
     speciesData: Species;
     moves: string[] | undefined;
-    clone: () => SelectedPokemon;
+    clone: () => SelectedPokemonInterface;
     // createSelectedPokemon: (name: string) => void;
     // createSpeciesData: (name: string) => void;
     // createCalcData: (name: string, options: CalcOptions) => void;
@@ -18,11 +17,13 @@ export interface SelectedPokemonInterface {
     updateNature: (nature: NatureName) => void;
     updateAbility: (ability: AbilityName) => void;
     updateAbilityActive: (abilityOn: boolean) => void;
+    updateBurned: (burned: boolean) => void;
     updateItem: (item: Item | undefined) => void;
     updateTera: (teraType: TypeName | undefined) => void;
     updateMoves: (moves: string[]) => void;
     getItemBoosts: (statName: StatID) => number;
     calcStatWrapper: (statName: StatID) => number;
+    calcAllStats: () => void;
 }
 
 class SelectedPokemon implements SelectedPokemon {
@@ -62,7 +63,14 @@ class SelectedPokemon implements SelectedPokemon {
             level: options.level ? options.level : 50,
             item: options.item ? options.item : undefined,
             nature: options.nature ? options.nature : undefined,
-            evs: options.evs ? options.evs : undefined,
+            evs: options.evs ? options.evs : {
+                hp: 0,
+                atk: 0,
+                def: 0,
+                spa: 0,
+                spd: 0,
+                spe: 0
+            },
             ivs: options.ivs ? options.ivs : {
                 hp: 31,
                 atk: 31,
@@ -71,7 +79,17 @@ class SelectedPokemon implements SelectedPokemon {
                 spd: 31,
                 spe: 31
             },
-            boosts: options.boosts ? options.boosts : undefined,
+            boosts: options.boosts ? options.boosts : {
+                hp: 0,
+                atk: 0,
+                def: 0,
+                spa: 0,
+                spd: 0,
+                spe: 0
+            },
+            abilityOn: options.abilityOn ? options.abilityOn : true,
+            status: options.status ? options.status : "",
+            boostedStat: "auto"
         });
     }
 
@@ -93,40 +111,38 @@ class SelectedPokemon implements SelectedPokemon {
             boosts: this.calcData.boosts
         });
 
-        (Object.keys(this.calcData.stats) as StatID[]).forEach((stat: StatID) => {
-            this.calcData.stats[stat] = this.calcStatWrapper(stat);
-        })
+        this.calcAllStats();
         this.moves = undefined;
     }
 
     updateEVs(stat: StatID, evs: number) {
         this.calcData.evs[stat] = evs;
-        this.calcData.stats[stat] = this.calcStatWrapper(stat);
+        this.calcData.rawStats[stat] = this.calcStatWrapper(stat);
     }
 
     updateIVs(stat: StatID, ivs: number) {
         this.calcData.ivs[stat] = ivs;
-        this.calcData.stats[stat] = this.calcStatWrapper(stat);
+        this.calcData.rawStats[stat] = this.calcStatWrapper(stat);
     }
 
     updateBoosts(stat: StatID, boost: number) {
         this.calcData.boosts[stat] = boost;
-        this.calcData.stats[stat] = this.calcStatWrapper(stat);
+        this.calcData.stats[stat] = this.calcStatWrapper(stat) * this.getBoostedStat(stat);
     }
 
     updateNature(nature: NatureName) {
         this.calcData.nature = nature;
-        (Object.keys(this.calcData.stats) as StatID[]).forEach((stat: StatID) => {
-            this.calcData.stats[stat] = this.calcStatWrapper(stat)
-        })
+        this.calcAllStats();
     }
 
     updateAbility(ability: AbilityName) {
         this.calcData.ability = ability;
+        this.calcAllStats();
     }
 
     updateAbilityActive(abilityOn: boolean) {
         this.calcData.abilityOn = abilityOn;
+        this.calcAllStats();
     }
 
     updateItem(item: Item | undefined) {
@@ -141,8 +157,12 @@ class SelectedPokemon implements SelectedPokemon {
         this.moves = moves;
     }
 
+    updateBurned(burned: boolean) {
+        this.calcData.status = burned ? "brn" : "";
+    }
+
     getItemBoosts(statName: StatID): number {
-        var rawStat = this.calcData.stats[statName];
+        var rawStat = this.calcData.rawStats[statName];
         if (this.calcData.item) {
             switch (statName) {
                 case "spe":
@@ -168,6 +188,25 @@ class SelectedPokemon implements SelectedPokemon {
         return rawStat;
     }
 
+
+    // private calcAllBoostedStats() {
+    //     (Object.keys(this.calcData.stats) as StatID[]).forEach((stat: StatID) => {
+    //         this.calcData.stats[stat] = this.calcRawStatWrapper(stat) * this.getBoostedStat(stat);
+    //     })
+    // }
+
+    private getBoostedStat(statName: StatID): number {
+        return -Math.round(-this.calcData.rawStats[statName] *
+            (2 / (Math.abs(this.calcData.boosts[statName]) + 2))
+            ** (this.calcData.boosts[statName] > 0 ? -1 : 1))
+    }
+
+    calcAllStats() {
+        (Object.keys(this.calcData.stats) as StatID[]).forEach((stat: StatID) => {
+            this.calcData.stats[stat] = this.calcStatWrapper(stat);
+        })
+    }
+
     calcStatWrapper(statName: StatID): number {
         let rawStat = Stats.calcStat(
             Generations.get(9),
@@ -177,9 +216,7 @@ class SelectedPokemon implements SelectedPokemon {
             this.calcData.evs[statName],
             this.calcData.level,
             this.calcData.nature)
-        let boostedStat = -Math.round(-rawStat * (2 / (Math.abs(this.calcData.boosts[statName]) + 2)) ** (this.calcData.boosts[statName] > 0 ? -1 : 1))
-
-        return boostedStat
+        return rawStat;
     }
 }
 

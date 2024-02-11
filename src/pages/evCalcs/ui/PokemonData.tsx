@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ThemeContainer, ThemeRow } from "./ThemeContainer";
+import { ThemeContainer, ThemeRow } from "../../../components/ThemeContainer";
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { IntrinsicPokemon } from "./IntrinsicPokemon";
 import { StatTable } from "./StatTable";

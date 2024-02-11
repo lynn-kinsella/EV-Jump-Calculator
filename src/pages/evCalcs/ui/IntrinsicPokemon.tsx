@@ -1,7 +1,7 @@
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { Pokedex } from "./Pokedex";
 import { PokemonOptions } from "./PokemonOptions";
-import { ThemeRow } from "./ThemeContainer";
+import { ThemeRow } from "../../../components/ThemeContainer";
 
 
 

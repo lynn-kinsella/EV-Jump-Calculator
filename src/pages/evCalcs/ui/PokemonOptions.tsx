@@ -1,5 +1,5 @@
 import React from "react";
-import { ThemeCheck, ThemeInputGroup, ThemeInputGroupMulti, ThemeSelect } from "./ThemeInput";
+import { ThemeCheck, ThemeInputGroup, ThemeSelect } from "./ThemeInput";
 import { AbilityName, Dex, Nature, NatureName, Type, TypeName } from "@pkmn/dex";
 import { PokemonProps } from "./IntrinsicPokemon";
 import { ItemSelectGroup } from "./ItemSelect";
@@ -29,11 +29,11 @@ export function PokemonOptions({ pkmn, updatePkmn }: PokemonProps) {
         updatePkmn(pkmn);
     }
 
-    function handleAbilityActiveChange(e: React.ChangeEvent<HTMLInputElement>) {
-        let active = e.target.checked;
-        pkmn.updateAbilityActive(active);
+    function handleBurnedChange(e: React.ChangeEvent<HTMLInputElement>) {
+        pkmn.updateBurned(e.target.checked);
         updatePkmn(pkmn);
     }
+
     const width = "w-40";
 
     return (
@@ -52,16 +52,16 @@ export function PokemonOptions({ pkmn, updatePkmn }: PokemonProps) {
                 </ThemeSelect>
             </ThemeInputGroup>
 
-            <ThemeInputGroupMulti width={width} id={"abilityOptions"}>
-                <ThemeInputGroup width={width} label={"Ability: "} id={"ability"}>
-                    <ThemeSelect value={pkmn.calcData.ability as string} handleChange={handleAbilityChange} id={"ability"}>
-                        {Object.values(pkmn.speciesData.abilities).map((ab: AbilityName) => <option value={ab}>{ab}</option>)}
-                    </ThemeSelect>
-                </ThemeInputGroup>
-                <ThemeInputGroup width={width} label={"Active? "} id={"active"}>
-                    <ThemeCheck state={!!pkmn.calcData.abilityOn} updateState={handleAbilityActiveChange} id={"active"}></ThemeCheck>
-                </ThemeInputGroup>
-            </ThemeInputGroupMulti>
+            <ThemeInputGroup width={width} label={"Ability: "} id={"ability"}>
+                <ThemeSelect value={pkmn.calcData.ability as string} handleChange={handleAbilityChange} id={"ability"}>
+                    {Object.values(pkmn.speciesData.abilities).map((ab: AbilityName) => <option value={ab}>{ab}</option>)}
+                </ThemeSelect>
+            </ThemeInputGroup>
+
+            <ThemeInputGroup width={width} label={"Burned? "} id={"status"}>
+                <ThemeCheck updateState={handleBurnedChange} id={"status"} state={pkmn.calcData.status == "brn"}>
+                </ThemeCheck>
+            </ThemeInputGroup>
 
             <ItemSelectGroup width={width} pkmn={pkmn} updatePkmn={updatePkmn}></ItemSelectGroup>
         </div >

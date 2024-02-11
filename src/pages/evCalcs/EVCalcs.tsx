@@ -2,7 +2,7 @@ import { useState, lazy, Suspense, useEffect } from "react";
 import { Field } from "@smogon/calc";
 import { Move } from "@pkmn/dex";
 import { SelectedPokemonInterface } from "./util/SelectedPokemon";
-import { ColumnContainer, ThemeContainer } from "./ui/ThemeContainer";
+import { ColumnContainer, ThemeContainer } from "../../components/ThemeContainer";
 
 const PokemonData = lazy(() => import("./ui/PokemonData"));
 const FieldData = lazy(() => import("./ui/FieldData"));
@@ -14,7 +14,7 @@ const placeholder = <ThemeContainer direction={""}><div className="w-[100%] h-[4
 function EVCalcs() {
     const [attacker, setAttacker] = useState<SelectedPokemonInterface>();
     const [defender, setDefender] = useState<SelectedPokemonInterface>();
-    const [field, setField] = useState<Field>(new Field());
+    const [field, setField] = useState<Field>(new Field({ gameType: "Doubles" }));
     const [move, setMove] = useState<Move>();
 
     useEffect(() => {
@@ -22,7 +22,7 @@ function EVCalcs() {
             setAttacker(new module.default("bulbasaur"));
             setDefender(new module.default("charmander"));
         })
-    })
+    }, [])
 
     function updateAttacker(newPokemon: SelectedPokemonInterface) {
         setAttacker(newPokemon.clone());
@@ -52,7 +52,7 @@ function EVCalcs() {
                     {/* Attack, Field Options */}
                     <div className="flex flex-row gap-2 w-[100%]">
                         <Suspense fallback={placeholder}>
-                            {((attacker != undefined) && (defender != undefined)) ? <MoveData updateMove={updateMove} pkmn={attacker} move={move}></MoveData> : placeholder}
+                            {((attacker != undefined) && (defender != undefined)) ? <MoveData updateMove={updateMove} pkmn={attacker} move={move} field={field} updateField={updateField}></MoveData> : placeholder}
                         </Suspense>
                         <Suspense fallback={placeholder}>
                             <FieldData field={field} updateField={updateField}></FieldData>
