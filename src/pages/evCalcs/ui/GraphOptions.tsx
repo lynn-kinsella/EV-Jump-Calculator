@@ -72,7 +72,7 @@ export function GraphOptions({ lineIndicators, updateLineIndicators, fixedStat, 
                         <ThemeCheck state={customEnabled} updateState={handleChangeCustomEnabled} id={"customhpLine"}>
                         </ThemeCheck>
                     </ThemeInputGroup>
-                    <ThemeInputGroup label={"%"} id={"hpPercent"}>
+                    <ThemeInputGroup label={"%"} id={"hpPercent"} direction="row-reverse">
                         <ThemeText width="w-12" inputMode="numeric" handleChange={handleChangeCustomValue} id={""}>
                         </ThemeText>
                     </ThemeInputGroup>
