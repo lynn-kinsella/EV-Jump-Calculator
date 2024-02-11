@@ -33,7 +33,6 @@ export default {
     },
     extend: {},
   },
-  darkMode: false,
   plugins: [],
 }
 

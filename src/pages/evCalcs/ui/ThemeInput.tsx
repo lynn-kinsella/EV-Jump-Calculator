@@ -31,7 +31,7 @@ interface TextInputProps extends ThemeInputProps {
 }
 
 export function ThemeText({ width, align = "right", value, handleChange, handleFocus, inputMode = "text", id }: TextInputProps) {
-    const twStyle = `h-6 border-gray-400 border-solid border ${width} text-${align} `
+    const twStyle = `h-6 border-gray-400 border-solid border ${width} text-${align} bg-white`
 
     return (
         <input inputMode={inputMode} className={twStyle} type="text" value={value} onBlur={handleChange} onFocus={handleFocus} id={id} />
@@ -46,7 +46,7 @@ interface GroupInputProps extends ThemeInputProps {
 }
 
 export function ThemeInputGroup({ children, width = "", id, label, hideLabel = false, size = "", direction = "flex-row" }: GroupInputProps) {
-    const twStyle = `flex ${direction} ${size} ${!hideLabel && "gap-1"} ${width} h-fit`;
+    const twStyle = `flex ${direction} ${size} ${!hideLabel && "gap-1"} ${width} h-fit bg-white`;
     return (
         <div className={twStyle}>
             <label htmlFor={id} className={hideLabel ? "max-w-0 overflow-clip" : undefined}>{label}</label>
@@ -71,7 +71,7 @@ interface ThemeCheckInterface extends ThemeInputProps {
 
 export function ThemeCheck({ state, updateState, id }: ThemeCheckInterface) {
     return (
-        <input id={id} type="checkbox" checked={state} onChange={updateState} />
+        <input className="text-white" id={id} type="checkbox" checked={state} onChange={updateState} />
     )
 }
 
@@ -84,7 +84,7 @@ interface ThemeRadioProps extends ThemeInputProps {
 
 export function ThemeRadio({ state, updateState, name, value, id }: ThemeRadioProps) {
     return (
-        <input type="radio" id={id} name={name} value={value} checked={state} onChange={updateState} />
+        <input className="bg-white" type="radio" id={id} name={name} value={value} checked={state} onChange={updateState} />
     )
 }
 
