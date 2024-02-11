@@ -15,6 +15,11 @@ interface MoveDataProps {
 export default function MoveData({ updateMove, move, pkmn, field, updateField }: MoveDataProps) {
     const [moveCategory, setMoveCategory] = useState<"All" | "Special" | "Physical" | "Set">("All");
 
+    useEffect(() => {
+        console.log(pkmn.moves)
+        setMoveCategory(pkmn.moves ? "Set" : "All")
+    }, [pkmn.moves])
+
     function handleCategoryChange(attackCategory: "All" | "Special" | "Physical" | "Set") {
         setMoveCategory(attackCategory);
     }
@@ -37,7 +42,7 @@ export default function MoveData({ updateMove, move, pkmn, field, updateField }:
                 <Suspense>
                     <MoveList pkmn={pkmn} handleUpdateMove={handleUpdateMove} moveCategory={moveCategory}></MoveList>
                 </Suspense>
-                <MoveCategoryFilter updateCategory={handleCategoryChange}></MoveCategoryFilter>
+                <MoveCategoryFilter updateCategory={handleCategoryChange} category={moveCategory}></MoveCategoryFilter>
                 <MoveTargetSelector field={field} handleUpdateGameType={handleUpdateGameType}></MoveTargetSelector>
                 <MoveInfo move={move}></MoveInfo>
             </div>
@@ -54,6 +59,8 @@ interface MoveListProps {
 function MoveList({ pkmn, handleUpdateMove, moveCategory }: MoveListProps) {
     const [moves, setMoves] = useState<Move[]>([]);
     const [index, setIndex] = useState<number>(-1);
+
+    useEffect(() => { setIndex(-1) }, [moveCategory]);
 
     useEffect(() => {
         import("@pkmn/dex").then((module) => {
@@ -121,8 +128,9 @@ function MoveTargetSelector({ field, handleUpdateGameType }: MoveTargetSelectorP
 
 interface MoveCategoryFilterProps {
     updateCategory: (MoveCategory: "All" | "Special" | "Physical" | "Set") => void;
+    category: "All" | "Special" | "Physical" | "Set";
 }
-function MoveCategoryFilter({ updateCategory }: MoveCategoryFilterProps) {
+function MoveCategoryFilter({ updateCategory, category }: MoveCategoryFilterProps) {
 
     function handleCategoryChange(e: React.ChangeEvent<HTMLSelectElement>) {
         updateCategory(e.target.value as "All" | "Special" | "Physical" | "Set");
@@ -131,7 +139,7 @@ function MoveCategoryFilter({ updateCategory }: MoveCategoryFilterProps) {
     return (
         <ThemeRow>
             <ThemeInputGroup label={"Category: "} id={"category"} width="w-[100%]" size="text-lg">
-                <ThemeSelect handleChange={handleCategoryChange} id={"category"}>
+                <ThemeSelect handleChange={handleCategoryChange} id={"category"} value={category}>
                     {["All", "Special", "Physical", "Set"].map((cat) => <option value={cat}>{cat.slice(0, 4)}</option>)}
                 </ThemeSelect>
             </ThemeInputGroup>
