@@ -96,7 +96,7 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
         }
         else {
             variedPokemon = workingPokemon[1];
-            natureOptions = ["-", " ", "+"];
+            natureOptions = [" ", "+"];
         }
 
 
