@@ -30,7 +30,7 @@ function LogoBadge({ }) {
 function ProjectDetails({ children }: ContainerProps) {
     if (children != undefined) {
         return (
-            <div className="py-4 px-5 border border-black rounded-xl bg-gradient-to-t to-white from-yellow-100 w-[100%] max-w-[50rem] h-32" >
+            <div className="py-4 px-5 border border-black rounded-xl bg-gradient-to-t to-white from-yellow-100 w-[100%] max-w-[50rem] sm:h-32" >
                 <div className="h-[100%] overflow-y-auto pr-1">
                     {children}
                 </div>
