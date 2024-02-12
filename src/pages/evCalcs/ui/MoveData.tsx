@@ -1,7 +1,7 @@
 import { ThemeContainer, ThemeRow } from "../../../components/ThemeContainer";
 import React, { Suspense, useEffect, useState } from "react";
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
-import { Move, Learnset } from "@pkmn/dex";
+import { Move, Learnset, SpeciesName } from "@pkmn/dex";
 import { ThemeInputGroup, ThemeRadio, ThemeSelect } from "./ThemeInput";
 import { Field } from "@smogon/calc";
 
@@ -72,7 +72,7 @@ function MoveList({ pkmn, handleUpdateMove, moveCategory }: MoveListProps) {
             }
             else {
 	    	var pkmnName: SpeciesName = pkmn.speciesData.name;
-		if (pkmnName.includes("Ogerpon")){pkmnName = "Ogerpon";}
+		if (pkmnName.includes("Ogerpon")){pkmnName = "Ogerpon" as SpeciesName;}
                 gen9Dex.learnsets.get(pkmnName)
                     .then((ls: Learnset) => {
                         if (ls.learnset) {
