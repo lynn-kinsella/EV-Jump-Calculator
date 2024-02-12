@@ -110,10 +110,8 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
                 variedPokemon.updateEVs(variedStat, pointsToEVs(i));
 
                 variedPokemon.calcAllStats();
-                // @ts-ignore -- computeFinalStats uses src/Pokemon instead of dist/Pokemon
                 computeFinalStats(Generations.get(9), workingPokemon[0].calcData, workingPokemon[1].calcData,
                     field, offenseStat);
-                // @ts-ignore -- computeFinalStats uses src/Pokemon instead of dist/Pokemon
                 computeFinalStats(Generations.get(9), workingPokemon[0].calcData, workingPokemon[1].calcData,
                     field, defenseStat);
 
