@@ -71,9 +71,9 @@ function MoveList({ pkmn, handleUpdateMove, moveCategory }: MoveListProps) {
                 handleUpdateMove(newMoves[0]);
             }
             else {
-	    	var speciesName = pkmn.speciesData.name;
-		if (speciesName.includes("Ogerpon")){speciesName = "Ogerpon";}
-                gen9Dex.learnsets.get(pkmn.speciesData.name)
+	    	var pkmnName: SpeciesName = pkmn.speciesData.name;
+		if (pkmnName.includes("Ogerpon")){pkmnName = "Ogerpon";}
+                gen9Dex.learnsets.get(pkmnName)
                     .then((ls: Learnset) => {
                         if (ls.learnset) {
                             let moves = [...Object.keys(ls.learnset)];
