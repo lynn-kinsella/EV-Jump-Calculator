@@ -4,7 +4,7 @@ export function AboutCalculator() {
     const [showHelp, setShowHelp] = useState<boolean>(false)
     return (
         <div className="w-[100%]">
-            <h1 className="text-xl">Pokemon EV Visualizer <span className="text-blue-700 underline hover:font-bold cursor-pointer" onClick={() => setShowHelp(prev => !prev)}>{!showHelp ? "Hide Help" : "Help"}</span></h1>
+            <h1 className="text-xl">Pokemon EV Visualizer <span className="text-blue-700 underline hover:font-bold cursor-pointer" onClick={() => setShowHelp(prev => !prev)}>{showHelp ? "Hide Help" : "Help"}</span></h1>
             {!showHelp ? <p className="text-sm">This tool helps optimize your Pokemon's EV Investment by helping identify "jump numbers", or EV values where you get more damage! or survivability for your marginal investment</p>
                 : <div className="flex flex-col gap-1 text-sm">
                     <p>This tool allows has two modes, that can be toggled by changing "Fixed EVs" in the Graph Options section.</p>
