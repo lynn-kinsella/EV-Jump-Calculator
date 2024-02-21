@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./src/pages/ui/*.tsx",
-    "./src/pages/**/**/*.tsx",
+    "./src/pages/**/ui/*.tsx",
+    "./src/pages/**/*.tsx",
     "./src/components/*.tsx",
   ],
   safelist: [
