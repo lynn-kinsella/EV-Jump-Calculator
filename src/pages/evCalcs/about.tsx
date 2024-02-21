@@ -4,7 +4,10 @@ export function AboutCalculator() {
     const [showHelp, setShowHelp] = useState<boolean>(false)
     return (
         <div className="w-[100%]">
-            <div className="flex w-[100%] flex-row gap-4 pr-2"><h1 className="text-xl">Pokemon EV Visualizer</h1><h1 className="text-xl text-blue-700 underline hover:font-bold cursor-pointer" onClick={() => setShowHelp(prev => !prev)}>{showHelp ? "Hide Help" : "Help"}</h1></div>
+            <div className="flex w-[100%] flex-row gap-4 pr-2">
+	    	<h1 className="text-xl">Pokemon EV Visualizer</h1>
+	    	<h2 className="text-xl text-blue-700 underline hover:font-bold cursor-pointer" onClick={() => setShowHelp(prev => !prev)}>{showHelp ? "Hide Help" : "Help"}</h2>
+	    </div>
             {!showHelp ? <span  className="text-sm">
 	    <p>This tool is a visual damage calculator and EV optimizer built for Pokemon Scarlet and Violet VGC.</p> 
 	    <p>It is designed to help you choose the best EV investment by letting you see exactly where "jump numbers" are.</p>
