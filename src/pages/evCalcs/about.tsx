@@ -4,8 +4,8 @@ export function AboutCalculator() {
     const [showHelp, setShowHelp] = useState<boolean>(false)
     return (
         <div className="w-[100%]">
-            <h1 className="text-xl">Pokemon EV Visualizer <span className="text-blue-700 underline hover:font-bold cursor-pointer" onClick={() => setShowHelp(prev => !prev)}>{showHelp ? "Hide Help" : "Help"}</span></h1>
-            {!showHelp ? <p className="text-sm">This tool helps optimize your Pokemon's EV Investment by helping identify "jump numbers", or EV values where you get more damage or survivability for your marginal investment!</p>
+            <h1 className="text-xl">Pokemon EV Visualizer<span className="text-blue-700 underline hover:font-bold cursor-pointer" onClick={() => setShowHelp(prev => !prev)}>{showHelp ? "Hide Help" : "Help"}</span></h1>
+            {!showHelp ? <p className="text-sm">This tool is a visual damage calculator and EV optimizer built for Pokemon Scarlet and Violet VGC, that helps you choose the best EV investment by letting you see exactly where "jump numbers" are. Jump numbers are EV values where you get more damage or survivability for your marginal investment, helping you get the most value out of each point you have for the matchups that matter.</p>
                 : <div className="flex flex-col gap-1 text-sm">
                     <p>This tool allows has two modes, that can be toggled by changing "Fixed EVs" in the Graph Options section.</p>
                     <p>Fixing Atk EVs shows how much damage an attacker can do to a defender with defense invesment ranging from 0- to 255+.</p>
