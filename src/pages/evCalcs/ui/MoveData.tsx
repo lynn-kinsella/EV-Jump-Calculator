@@ -78,13 +78,20 @@ function MoveList({ pkmn, handleUpdateMove, moveCategory }: MoveListProps) {
                         evoLine.push(curEvo.name);
                     }
                 }
+                var firstMon: boolean = true;
                 evoLine.forEach(evo => {
                     gen9Dex.learnsets.get(evo).then((learnsetResult) => {
                         if (learnsetResult.learnset) {
                             let moves = [...Object.keys(learnsetResult.learnset)];
                             const newMoves = moves.map(learnsetEntry => gen9Dex.moves.get(learnsetEntry))
                                 .filter((move) => moveCategory == "All" || move.category == moveCategory);
-                            setMoves(prev => [...prev, ...newMoves]);
+                            if (firstMon) {
+                                firstMon = false;
+                                setMoves([...newMoves]);
+                            }
+                            else {
+                                setMoves(prev => [...prev, ...newMoves.filter(move => !prev.includes(move))]);
+                            }
                         }
                     })
                 });
