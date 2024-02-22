@@ -18,10 +18,17 @@ export function EVSlider({ stat, updatePkmn, referencePkmn }: EVSliderProps) {
     const sliderRef = useRef<HTMLDivElement>(null);
     const controlRef = useRef<HTMLDivElement>(null);
 
-    function handleSlide(e: React.MouseEvent<HTMLDivElement>) {
+    function handleSlideMouse(e: React.MouseEvent<HTMLDivElement>) {
         if (dragging && sliderRef.current && controlRef.current) {
             const boundingBox = sliderRef.current.getBoundingClientRect();
             setStatPoints(Math.max(0, Math.min(Math.round((e.clientX - boundingBox.left) / (boundingBox.width / 35) - 1), 32)));
+        }
+    }
+
+    function handleSlideTouch(e: React.TouchEvent<HTMLDivElement>) {
+        if (dragging && sliderRef.current && controlRef.current) {
+            const boundingBox = sliderRef.current.getBoundingClientRect();
+            setStatPoints(Math.max(0, Math.min(Math.round((e.touches[0].clientX - boundingBox.left) / (boundingBox.width / 35) - 1), 32)));
         }
     }
 
@@ -44,14 +51,25 @@ export function EVSlider({ stat, updatePkmn, referencePkmn }: EVSliderProps) {
         }
     }
 
+    function handleTouchStart(e: React.TouchEvent<HTMLDivElement>) {
+        setDragging(true)
+        if (sliderRef.current && controlRef.current) {
+            const boundingBox = sliderRef.current.getBoundingClientRect();
+            setStatPoints(Math.max(0, Math.min(Math.round((e.touches[0].clientX - boundingBox.left) / (boundingBox.width / 35) - 1), 32)));
+        }
+    }
+
     return (
         <ThemeRow>
             <div className="w-[100%] flex flex-col">
                 <span className="text-lg">Fixed {stat[0].toUpperCase() + stat.slice(1)} EVs - {pointsToEVs(statPoints)}</span>
-                <div className={"h-8 flex items-center w-[100%] " + (dragging ? "cursor-grab" : "cursor-pointer")}
-                    onMouseMove={handleSlide}
+                <div className={"h-8 flex items-center w-[100%] " + (dragging ? "cursor-grab" : "cursor-pointer") + (dragging ? "touch-none" : "")}
+                    onMouseMove={handleSlideMouse}
                     onMouseDown={handleClick}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleSlideTouch}
                     onMouseUp={() => setDragging(false)}
+                    onTouchEnd={() => setDragging(false)}
                     onMouseLeave={() => { if (dragging) { setDragging(false); } }}>
                     <div ref={sliderRef} className="h-8 relative min-w-[100%] overflow-clip">
 
