@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Sprites } from "@pkmn/img";
 import { ModdedDex, Species } from "@pkmn/dex";
-import { ThemeInputGroup, ThemeSelect } from "./ThemeInput";
+import { ThemeFuzzy, ThemeInputGroup } from "./ThemeInput";
 import { PokemonProps } from "./IntrinsicPokemon";
 
 export function Pokedex({ pkmn, updatePkmn }: PokemonProps) {
@@ -44,9 +44,9 @@ function PokemonSelector({ pkmn, updatePkmn }: PokemonProps) {
         return dex.species.all().filter((mon) => !mon.isNonstandard && !mon.name.includes("Pikachu-"));
     }
 
-    function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    function handleChange(newpkmn: string) {
         if (gen9Dex) {
-            pkmn.updateSpecies(gen9Dex.species.get(e.target.value));
+            pkmn.updateSpecies(gen9Dex.species.get(newpkmn));
             updatePkmn(pkmn);
         }
     }
@@ -54,9 +54,10 @@ function PokemonSelector({ pkmn, updatePkmn }: PokemonProps) {
     return (
         <div className="w-[100%]">
             <ThemeInputGroup label={"pokedex"} id={"pokedex"} hideLabel={true}>
-                <ThemeSelect value={pkmn.speciesData.name} handleChange={handleChange} id={"pokedex"}>
+                <ThemeFuzzy options={filteredDex.map((mon) => mon.name)} handleChange={handleChange} id={""} value={pkmn.speciesData.name}></ThemeFuzzy>
+                {/* <ThemeSelect value={pkmn.speciesData.name} handleChange={handleChange} id={"pokedex"}>
                     {filteredDex.map((mon) => <option value={mon.name}>{mon.name}</option>)}
-                </ThemeSelect>
+                </ThemeSelect> */}
             </ThemeInputGroup>
         </div>
     );
