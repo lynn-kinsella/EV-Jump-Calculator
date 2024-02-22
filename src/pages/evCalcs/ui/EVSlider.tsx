@@ -85,7 +85,7 @@ export function EVSlider({ stat, updatePkmn, referencePkmn }: EVSliderProps) {
                         <div
                             ref={controlRef}
                             className={`${!dragging ? "bg-white" : "bg-red-400"} hover:bg-red-100 border-2 border-red-400 h-8 absolute rounded-full`}
-                            style={{ width: `${100 / 35}%`, left: `${100 / 35 * (statPoints + 1)}%` }}>
+                            style={{ width: `${100 / 35}%`, left: `${100 / 35 * (statPoints + 1)}%` }} draggable={false}>
                         </div>
                     </div>
                 </div>
