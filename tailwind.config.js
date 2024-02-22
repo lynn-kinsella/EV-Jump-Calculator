@@ -18,7 +18,8 @@ export default {
     "to-red-100",
     "from-red-100",
     "to-blue-100",
-    "bg-gradient-to-r"
+    "bg-gradient-to-r",
+    "touch-none"
   ],
   theme: {
     colors: {
