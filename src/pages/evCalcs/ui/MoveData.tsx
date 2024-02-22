@@ -16,7 +16,6 @@ export default function MoveData({ updateMove, move, pkmn, field, updateField }:
     const [moveCategory, setMoveCategory] = useState<"All" | "Special" | "Physical" | "Set">("All");
 
     useEffect(() => {
-        console.log(pkmn.moves)
         setMoveCategory(pkmn.moves ? "Set" : "All")
     }, [pkmn.moves])
 
