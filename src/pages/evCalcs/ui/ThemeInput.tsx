@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ContainerProps } from "../../../components/ThemeContainer";
+import Fuse from "fuse.js"
 
 interface ThemeInputProps extends ContainerProps {
     width?: string;
@@ -18,6 +19,115 @@ export function ThemeSelect({ children, value, handleChange, size = "md", width,
         <select id={id} className={twStyle} value={value} onChange={handleChange} >
             {children}
         </select>
+    )
+}
+
+interface ThemeFuzzyProps extends ThemeInputProps {
+    value?: string | number;
+    options: string[];
+    handleChange: (e?: any) => void;
+    size?: "sm" | "md";
+}
+
+export function ThemeFuzzy({ options, value, handleChange, size = "md", width, id }: ThemeFuzzyProps) {
+    const [queryText, setQueryText] = useState<string>("");
+    const [showDropDown, setShowDropdown] = useState<boolean>(false);
+    const [arrowKeyIndex, setArrowKeyIndex] = useState<number>(0);
+    const [filteredList, setFilteredList] = useState<string[]>(options)
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    function sendChange(pkmn: string) {
+        if (pkmn && showDropDown) {
+            handleChange(pkmn)
+        }
+    }
+
+    function openDropdown() {
+        setShowDropdown(true);
+        setArrowKeyIndex(0);
+    }
+
+    function closeDropdown(overrideIndex: number) {
+        if (overrideIndex) {
+            setArrowKeyIndex(overrideIndex < 0 ? arrowKeyIndex : overrideIndex)
+        }
+        sendChange(filteredList[overrideIndex < 0 ? arrowKeyIndex : overrideIndex])
+
+        setShowDropdown(false);
+        inputRef.current?.blur();
+        setQueryText("");
+    }
+
+    function getListLength() {
+        return filteredList.length - 1;
+    }
+
+    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        switch (e.key) {
+            case "Escape":
+            case "Enter":
+                closeDropdown(-1);
+                break;
+            case "ArrowUp":
+                setArrowKeyIndex(prev => Math.max(prev - 1, 0));
+                break;
+            case "ArrowDown":
+                setArrowKeyIndex(prev => Math.min(prev + 1, getListLength()));
+                break;
+        }
+    }
+
+    function updateFilteredList() {
+        var result = options;
+        if (queryText) {
+            const fuse = new Fuse(options);
+            result = fuse.search(queryText).map(result => result.item);
+            sendChange(result[arrowKeyIndex])
+        }
+        setFilteredList(result)
+    }
+
+    useEffect(() => {
+        if (showDropDown) {
+            updateFilteredList();
+        }
+    }, [queryText])
+
+    useEffect(() => {
+        if (showDropDown) {
+            sendChange(filteredList[arrowKeyIndex]);
+        }
+    }, [arrowKeyIndex])
+
+    const twStyle = `px-1 w-[100%] border-gray-400 border-solid bg-white border ${width} h-${size == "sm" ? 4 : 6} text-${size == "sm" ? "sm" : "base"}`
+
+    return (
+        <div className="w-[100%] h-6">
+            <input type="search"
+                value={queryText}
+                ref={inputRef}
+                className={twStyle}
+                onChange={(e) => setQueryText(e.target.value)}
+                placeholder={value as string}
+                onFocus={() => openDropdown()}
+                // onBlur={() => closeDropdown(-1)}
+                onKeyDown={showDropDown ? handleKeyDown : undefined}
+                id={id} />
+
+            {showDropDown &&
+                <ul className="z-10 relative bg-white w-[100%] border-gray-400 border-solid border-l border-r drop-shadow-lg ">
+                    {filteredList.slice(0, 5).map((item, idx) => (
+                        <li key={idx} className={`w-[100%] border-b border-gray-400 border-solid px-2 ${(arrowKeyIndex == idx) ? "bg-gray-700" : ""}`}
+                            onClick={() => { closeDropdown(idx) }}
+                            onMouseEnter={() => { setArrowKeyIndex(idx) }}
+                            onTouchStart={() => { closeDropdown(idx) }}
+                        >
+                            <span>{item}</span>
+                        </li>
+                    ))}
+                </ul>
+            }
+        </div>
     )
 }
 
