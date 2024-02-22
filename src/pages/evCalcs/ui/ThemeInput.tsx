@@ -43,6 +43,7 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
     }
 
     function openDropdown() {
+        updateFilteredList(value as string)
         setShowDropdown(true);
         setArrowKeyIndex(0);
     }
@@ -77,11 +78,16 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
         }
     }
 
-    function updateFilteredList() {
+    function updateFilteredList(overrideName?: string) {
         var result = options;
         if (queryText) {
             const fuse = new Fuse(options);
             result = fuse.search(queryText).map(result => result.item);
+            sendChange(result[arrowKeyIndex])
+        }
+        else if (overrideName) {
+            const fuse = new Fuse(options);
+            result = fuse.search(overrideName).map(result => result.item);
             sendChange(result[arrowKeyIndex])
         }
         setFilteredList(result)
