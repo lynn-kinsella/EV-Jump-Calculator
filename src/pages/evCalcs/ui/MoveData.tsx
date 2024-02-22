@@ -1,7 +1,7 @@
 import { ThemeContainer, ThemeRow } from "../../../components/ThemeContainer";
 import React, { Suspense, useEffect, useState } from "react";
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
-import { Move, Learnset, SpeciesName } from "@pkmn/dex";
+import { Move, SpeciesName } from "@pkmn/dex";
 import { ThemeInputGroup, ThemeRadio, ThemeSelect } from "./ThemeInput";
 import { Field } from "@smogon/calc";
 
@@ -39,8 +39,7 @@ export default function MoveData({ updateMove, move, pkmn, field, updateField }:
             </ThemeRow>
             <div className="flex flex-col w-[100%]">
                 <Suspense>
-                    <MoveList pkmn={pkmn} handleUpdateMove={handleUpdateMove} moveCategory={moveCategory}></MoveList>
-                </Suspense>
+                    <MoveList pkmn={pkmn} handleUpdateMove={handleUpdateMove} moveCategory={moveCategory}></MoveList> </Suspense>
                 <MoveCategoryFilter updateCategory={handleCategoryChange} category={moveCategory}></MoveCategoryFilter>
                 <MoveTargetSelector field={field} handleUpdateGameType={handleUpdateGameType}></MoveTargetSelector>
                 <MoveInfo move={move}></MoveInfo>
@@ -70,21 +69,25 @@ function MoveList({ pkmn, handleUpdateMove, moveCategory }: MoveListProps) {
                 handleUpdateMove(newMoves[0]);
             }
             else {
-	    	var pkmnName: SpeciesName = pkmn.speciesData.name;
-		if (pkmnName.includes("Ogerpon")){pkmnName = "Ogerpon" as SpeciesName;}
-                gen9Dex.learnsets.get(pkmnName)
-                    .then((ls: Learnset) => {
-                        if (ls.learnset) {
-                            let moves = [...Object.keys(ls.learnset)];
+                var evoLine: SpeciesName[] = [pkmn.speciesData.name];
+                if (evoLine[0].includes("Ogerpon")) { evoLine = ["Ogerpon" as SpeciesName]; }
+                else if (pkmn.speciesData.prevo) {
+                    var curEvo = pkmn.speciesData
+                    while (curEvo.prevo) {
+                        curEvo = gen9Dex.species.get(curEvo.prevo);
+                        evoLine.push(curEvo.name);
+                    }
+                }
+                evoLine.forEach(evo => {
+                    gen9Dex.learnsets.get(evo).then((learnsetResult) => {
+                        if (learnsetResult.learnset) {
+                            let moves = [...Object.keys(learnsetResult.learnset)];
                             const newMoves = moves.map(learnsetEntry => gen9Dex.moves.get(learnsetEntry))
                                 .filter((move) => moveCategory == "All" || move.category == moveCategory);
-                            setMoves(newMoves);
-                            handleUpdateMove(newMoves[index]);
+                            setMoves(prev => [...prev, ...newMoves]);
                         }
-                        else {
-                            setMoves([]);
-                        }
-                    });
+                    })
+                });
             }
         })
     }, [pkmn, moveCategory]);
