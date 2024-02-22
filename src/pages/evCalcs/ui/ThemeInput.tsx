@@ -47,8 +47,12 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
         setArrowKeyIndex(0);
     }
 
-    function closeDropdown(overrideIndex?: number) {
-        sendChange(filteredList[overrideIndex == undefined ? arrowKeyIndex : overrideIndex])
+    function closeDropdown(overrideIndex: number) {
+        if (overrideIndex) {
+            setArrowKeyIndex(overrideIndex < 0 ? arrowKeyIndex : overrideIndex)
+        }
+        sendChange(filteredList[overrideIndex < 0 ? arrowKeyIndex : overrideIndex])
+
         setShowDropdown(false);
         inputRef.current?.blur();
         setQueryText("");
@@ -62,7 +66,7 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
         switch (e.key) {
             case "Escape":
             case "Enter":
-                closeDropdown();
+                closeDropdown(-1);
                 break;
             case "ArrowUp":
                 setArrowKeyIndex(prev => Math.max(prev - 1, 0));
@@ -78,17 +82,21 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
         if (queryText) {
             const fuse = new Fuse(options);
             result = fuse.search(queryText).map(result => result.item);
+            sendChange(result[arrowKeyIndex])
         }
-        sendChange(result[arrowKeyIndex])
         setFilteredList(result)
     }
 
     useEffect(() => {
-        updateFilteredList();
+        if (showDropDown) {
+            updateFilteredList();
+        }
     }, [queryText])
 
     useEffect(() => {
-        sendChange(filteredList[arrowKeyIndex]);
+        if (showDropDown) {
+            sendChange(filteredList[arrowKeyIndex]);
+        }
     }, [arrowKeyIndex])
 
     const twStyle = `px-1 w-[100%] border-gray-400 border-solid bg-white border ${width} h-${size == "sm" ? 4 : 6} text-${size == "sm" ? "sm" : "base"}`
@@ -101,8 +109,8 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
                 className={twStyle}
                 onChange={(e) => setQueryText(e.target.value)}
                 placeholder={value as string}
-                onFocus={openDropdown}
-                onBlur={() => closeDropdown()}
+                onFocus={() => openDropdown()}
+                // onBlur={() => closeDropdown(-1)}
                 onKeyDown={showDropDown ? handleKeyDown : undefined}
                 id={id} />
 
@@ -110,9 +118,9 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
                 <ul className="z-10 relative bg-white w-[100%] border-gray-400 border-solid border-l border-r drop-shadow-lg ">
                     {filteredList.slice(0, 5).map((item, idx) => (
                         <li key={idx} className={`w-[100%] border-b border-gray-400 border-solid px-2 ${(arrowKeyIndex == idx) ? "bg-gray-700" : ""}`}
-                            onClick={() => closeDropdown(idx)}
+                            onClick={() => { closeDropdown(idx) }}
                             onMouseEnter={() => { setArrowKeyIndex(idx) }}
-                            onTouchStart={() => { closeDropdown(idx); }}
+                            onTouchStart={() => { closeDropdown(idx) }}
                         >
                             <span>{item}</span>
                         </li>
