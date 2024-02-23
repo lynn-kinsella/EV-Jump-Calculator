@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
 import { ContainerProps } from "../../../components/ThemeContainer";
 import Fuse from "fuse.js"
@@ -9,7 +10,7 @@ interface ThemeInputProps extends ContainerProps {
 
 interface SelectInputProps extends ThemeInputProps {
     value?: string | number;
-    handleChange: (e?: unknown) => void;
+    handleChange: (e?: any) => void;
     size?: "sm" | "md";
 }
 
@@ -142,8 +143,8 @@ interface TextInputProps extends ThemeInputProps {
     align?: "left" | "right" | "center";
     value?: string | number;
     inputMode?: "text" | "numeric";
-    handleChange: (e: unknown) => void;
-    handleFocus?: (e: unknown) => void;
+    handleChange: (e: any) => void;
+    handleFocus?: (e: any) => void;
 }
 
 export function ThemeText({ width, align = "right", value, handleChange, handleFocus, inputMode = "text", id }: TextInputProps) {
