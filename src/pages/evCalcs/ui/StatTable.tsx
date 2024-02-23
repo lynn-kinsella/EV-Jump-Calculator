@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React from "react";
 import { ContainerProps, ThemeRow } from "../../../components/ThemeContainer";
 import { PokemonProps } from "./IntrinsicPokemon";
 import { NatureName, StatID } from "@pkmn/dex";
@@ -123,7 +123,6 @@ interface ThemeStatEntryProps {
 }
 
 function ThemeStatEntry({ type, label, handleUpdate, value, selectOptions }: ThemeStatEntryProps) {
-    const [controlled, setControlled] = useState<boolean>(true);
     return (
         <div className="w-[100%] h-6 text-center">
             <ThemeInputGroup label={label} id={label} hideLabel={true}>
@@ -132,9 +131,8 @@ function ThemeStatEntry({ type, label, handleUpdate, value, selectOptions }: The
                     type == "text" ? <ThemeText align="center"
                         inputMode="numeric"
                         width="w-10"
-                        value={controlled ? value : undefined}
-                        handleFocus={() => { setControlled(false) }}
-                        handleChange={(e) => { handleUpdate(e); setControlled(true); }} id={label}>
+                        value={value}
+                        handleChange={handleUpdate} id={label}>
                     </ThemeText>
                         :
                         <ThemeSelect width="w-fit"

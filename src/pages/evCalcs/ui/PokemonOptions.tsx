@@ -1,5 +1,5 @@
 import React from "react";
-import { ThemeCheck, ThemeInputGroup, ThemeSelect } from "./ThemeInput";
+import { ThemeCheck, ThemeInputGroup, ThemeSelect, ThemeText } from "./ThemeInput";
 import { AbilityName, Dex, Nature, NatureName, Type, TypeName } from "@pkmn/dex";
 import { PokemonProps } from "./IntrinsicPokemon";
 import { ItemSelectGroup } from "./ItemSelect";
@@ -34,6 +34,17 @@ export function PokemonOptions({ pkmn, updatePkmn }: PokemonProps) {
         updatePkmn(pkmn);
     }
 
+    function handleLevelChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const level:number = parseInt(e.target.value);
+        if (!isNaN(level) && level <= 100 && level >= 1){
+            pkmn.updateLevel(level);
+            updatePkmn(pkmn);
+        }
+        else {
+            e.target.value = String(pkmn.calcData.level);
+        }
+    }
+
     const width = "w-40";
 
     return (
@@ -64,6 +75,11 @@ export function PokemonOptions({ pkmn, updatePkmn }: PokemonProps) {
             </ThemeInputGroup>
 
             <ItemSelectGroup width={width} pkmn={pkmn} updatePkmn={updatePkmn}></ItemSelectGroup>
+            
+            <ThemeInputGroup width={width} label={"Level: "} id={"level"}>
+                <ThemeText handleChange={handleLevelChange} id={"level"} width="w-10 p-1" align="right" value={pkmn.calcData.level} inputMode="numeric">
+                </ThemeText>
+            </ThemeInputGroup>
         </div >
     );
 }
