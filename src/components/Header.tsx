@@ -14,7 +14,7 @@ export function Header() {
     );
 }
 
-function LogoBadge({ }) {
+function LogoBadge() {
     return (
         <div className="w-[100%] max-w-[30rem]">
             <Link to="/">
