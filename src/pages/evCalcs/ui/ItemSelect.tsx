@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dex, Item, ModdedDex, Type } from "@pkmn/dex";
 import { SelectedPokemonInterface } from "../util/SelectedPokemon";
 import { PokemonProps } from "./IntrinsicPokemon";
@@ -8,7 +7,7 @@ import { ThemeInputGroupMulti, ThemeInputGroup, ThemeSelect } from "./ThemeInput
 export type ItemFilter = { name: string; property: keyof Item; assertionFunction: FilterFunction; expected: any; };
 type FilterFunction = (item: Item, property: keyof Item, expected: any) => boolean;
 export const checkValueTrue: FilterFunction = (item: Item, property: keyof Item, expected: any): boolean => item[property] == expected;
-export const checkPropertyIncludesKey: FilterFunction = (item: Item, property: keyof Item, expected: any): boolean => ((item[property] as string).toLowerCase()).includes(expected);
+export const checkPropertyIncludesKey: FilterFunction = (item: Item, property: keyof Item, expected: any): boolean => ((item[property] as String).toLowerCase()).includes(expected);
 
 
 interface ItemSelectGroupProps extends PokemonProps {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
 import { ContainerProps } from "../../../components/ThemeContainer";
 import Fuse from "fuse.js"
@@ -80,7 +79,7 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
     }
 
     function updateFilteredList(overrideName?: string) {
-        let result = options;
+        var result = options;
         if (queryText) {
             const fuse = new Fuse(options);
             result = fuse.search(queryText).map(result => result.item);

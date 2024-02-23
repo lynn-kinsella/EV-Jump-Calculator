@@ -41,5 +41,5 @@ export default function PokemonData({ attacker, defender, updateAttacker, update
                 <ImportBox setImportMode={setImportMode} updatePkmn={showAttacker ? updateAttacker : updateDefender}></ImportBox>
             </ThemeContainer>
         );
-    }
+    };
 }

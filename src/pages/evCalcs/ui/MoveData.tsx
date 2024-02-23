@@ -69,20 +69,20 @@ function MoveList({ pkmn, handleUpdateMove, moveCategory }: MoveListProps) {
                 handleUpdateMove(newMoves[0]);
             }
             else {
-                let evoLine: SpeciesName[] = [pkmn.speciesData.name];
+                var evoLine: SpeciesName[] = [pkmn.speciesData.name];
                 if (evoLine[0].includes("Ogerpon")) { evoLine = ["Ogerpon" as SpeciesName]; }
                 else if (pkmn.speciesData.prevo) {
-                    let curEvo = pkmn.speciesData
+                    var curEvo = pkmn.speciesData
                     while (curEvo.prevo) {
                         curEvo = gen9Dex.species.get(curEvo.prevo);
                         evoLine.push(curEvo.name);
                     }
                 }
-                let firstMon: boolean = true;
+                var firstMon: boolean = true;
                 evoLine.forEach(evo => {
                     gen9Dex.learnsets.get(evo).then((learnsetResult) => {
                         if (learnsetResult.learnset) {
-                            const moves = [...Object.keys(learnsetResult.learnset)];
+                            let moves = [...Object.keys(learnsetResult.learnset)];
                             const newMoves = moves.map(learnsetEntry => gen9Dex.moves.get(learnsetEntry))
                                 .filter((move) => moveCategory == "All" || move.category == moveCategory);
                             if (firstMon) {
@@ -100,7 +100,7 @@ function MoveList({ pkmn, handleUpdateMove, moveCategory }: MoveListProps) {
     }, [pkmn, moveCategory]);
 
     function handleAttackChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        const index = parseInt(e.target.value);
+        let index = parseInt(e.target.value);
         setIndex(index);
         handleUpdateMove(moves[index]);
     }

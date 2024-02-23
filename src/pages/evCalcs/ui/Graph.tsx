@@ -80,12 +80,12 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
             setGraphData({ "-1": { inputStats: [{ stat: -1, nature: " ", evs: 0, ivs: 0 }], calcs: { low: 0, high: 0 } } });
             return
         }
-        const workingPokemon: SelectedPokemonInterface[] = [attacker.clone(), defender.clone()]
-        let variedPokemon: SelectedPokemonInterface;
-        let natureOptions: NatureMod[];
-        const variedStat: Exclude<StatID, "hp"> = getIndependentEV();
-        let offenseStat: StatID = move.category == "Physical" ? "atk" : "spa";
-        const defenseStat: StatID = move.category == "Physical" ? "def" : "spd";
+        var workingPokemon: SelectedPokemonInterface[] = [attacker.clone(), defender.clone()]
+        var variedPokemon: SelectedPokemonInterface;
+        var natureOptions: NatureMod[];
+        var variedStat: Exclude<StatID, "hp"> = getIndependentEV();
+        var offenseStat: StatID = move.category == "Physical" ? "atk" : "spa";
+        var defenseStat: StatID = move.category == "Physical" ? "def" : "spd";
         if (move.name == "Body Press") {
             offenseStat = "def";
         }
@@ -100,13 +100,13 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
         }
 
 
-        const data: GraphColumns = {}
+        var data: GraphColumns = {}
         const gen = Generations.get(9);
-        let statValue: number = 0;
+        var statValue: number = 0;
 
         natureOptions.forEach((natureType: NatureMod) => {
             variedPokemon.updateNature(keyNatures[variedStat][natureType]);
-            for (let i = 0; i < 33; i++) {
+            for (var i = 0; i < 33; i++) {
                 variedPokemon.updateEVs(variedStat, pointsToEVs(i));
 
                 variedPokemon.calcAllStats();

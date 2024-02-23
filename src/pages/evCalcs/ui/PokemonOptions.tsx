@@ -7,8 +7,8 @@ import { ItemSelectGroup } from "./ItemSelect";
 export function PokemonOptions({ pkmn, updatePkmn }: PokemonProps) {
 
     function handleTeraChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        const newType = e.target.value as TypeName | "";
-        if (!newType) {
+        let newType = e.target.value as TypeName | "";
+        if (!!!newType) {
             pkmn.updateTera(undefined);
         }
         else {
@@ -18,13 +18,13 @@ export function PokemonOptions({ pkmn, updatePkmn }: PokemonProps) {
     }
 
     function handleNatureChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        const newNature = e.target.value as NatureName;
+        let newNature = e.target.value as NatureName;
         pkmn.updateNature(newNature);
         updatePkmn(pkmn);
     }
 
     function handleAbilityChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        const newAbility = e.target.value as AbilityName;
+        let newAbility = e.target.value as AbilityName;
         pkmn.updateAbility(newAbility);
         updatePkmn(pkmn);
     }

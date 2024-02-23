@@ -20,7 +20,7 @@ export function ImportBox({ setImportMode, updatePkmn }: ImportBoxProps) {
             import("@pkmn/sets").then((setModule) => {
                 const set = setModule.Sets.importSet(currentPaste);
                 if (set && set.species) {
-                    const newPkmn = new SelectedPokemon(set.species);
+                    var newPkmn = new SelectedPokemon(set.species);
                     if (set.evs) {
                         newPkmn.updateEVs("hp", set.evs.hp);
                         newPkmn.updateEVs("atk", set.evs.atk);
