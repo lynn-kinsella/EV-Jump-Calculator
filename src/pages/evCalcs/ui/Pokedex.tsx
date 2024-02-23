@@ -44,9 +44,9 @@ function PokemonSelector({ pkmn, updatePkmn }: PokemonProps) {
         return dex.species.all().filter((mon) => !mon.isNonstandard && !mon.name.includes("Pikachu-"));
     }
 
-    function handleChange(newpkmn: string) {
+    function handleChange(newValue: string) {
         if (gen9Dex) {
-            pkmn.updateSpecies(gen9Dex.species.get(newpkmn));
+            pkmn.updateSpecies(gen9Dex.species.get(newValue));
             updatePkmn(pkmn);
         }
     }

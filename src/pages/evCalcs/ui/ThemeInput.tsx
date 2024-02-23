@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
 import { ContainerProps } from "../../../components/ThemeContainer";
 import Fuse from "fuse.js"
@@ -25,7 +26,7 @@ export function ThemeSelect({ children, value, handleChange, size = "md", width,
 interface ThemeFuzzyProps extends ThemeInputProps {
     value?: string | number;
     options: string[];
-    handleChange: (e?: any) => void;
+    handleChange: (newValue: string) => void;
     size?: "sm" | "md";
 }
 
@@ -49,9 +50,9 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
     }
 
     function closeDropdown(overrideIndex: number) {
-        if (overrideIndex) {
-            setArrowKeyIndex(overrideIndex < 0 ? arrowKeyIndex : overrideIndex)
-        }
+        // if (overrideIndex > 0) {
+        //     setArrowKeyIndex(overrideIndex < 0 ? arrowKeyIndex : overrideIndex)
+        // }
         sendChange(filteredList[overrideIndex < 0 ? arrowKeyIndex : overrideIndex])
 
         setShowDropdown(false);
@@ -79,7 +80,7 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
     }
 
     function updateFilteredList(overrideName?: string) {
-        var result = options;
+        let result = options;
         if (queryText) {
             const fuse = new Fuse(options);
             result = fuse.search(queryText).map(result => result.item);
@@ -116,7 +117,7 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
                 onChange={(e) => setQueryText(e.target.value)}
                 placeholder={value as string}
                 onFocus={() => openDropdown()}
-                // onBlur={() => closeDropdown(-1)}
+                onBlur={() => closeDropdown(-1)}
                 onKeyDown={showDropDown ? handleKeyDown : undefined}
                 id={id} />
 
@@ -126,7 +127,7 @@ export function ThemeFuzzy({ options, value, handleChange, size = "md", width, i
                         <li key={idx} className={`w-[100%] border-b border-gray-400 border-solid px-2 ${(arrowKeyIndex == idx) ? "bg-gray-700" : ""}`}
                             onClick={() => { closeDropdown(idx) }}
                             onMouseEnter={() => { setArrowKeyIndex(idx) }}
-                            onTouchStart={() => { closeDropdown(idx) }}
+                            onTouchStart={() => { setArrowKeyIndex(idx) }}
                         >
                             <span>{item}</span>
                         </li>
