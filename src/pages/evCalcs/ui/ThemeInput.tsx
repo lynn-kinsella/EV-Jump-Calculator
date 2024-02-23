@@ -147,11 +147,19 @@ interface TextInputProps extends ThemeInputProps {
     handleFocus?: (e: any) => void;
 }
 
-export function ThemeText({ width, align = "right", value, handleChange, handleFocus, inputMode = "text", id }: TextInputProps) {
+export function ThemeText({ width="w-[100%]", align = "right", value, handleChange, inputMode = "text", id }: TextInputProps) {
+    const [controlled, setControlled] = useState<boolean>(true);
     const twStyle = `h-6 border-gray-400 border-solid border ${width} text-${align} bg-white`
 
     return (
-        <input inputMode={inputMode} className={twStyle} type="text" value={value} onBlur={handleChange} onFocus={handleFocus} id={id} />
+        <input 
+        inputMode={inputMode} 
+        className={twStyle} 
+        type="text" 
+        value={controlled? value: undefined} 
+        onBlur={(e) => {setControlled(true); handleChange(e);}} 
+        onFocus={()=>{setControlled(false)}} 
+        id={id} />
     )
 }
 

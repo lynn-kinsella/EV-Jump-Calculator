@@ -103,11 +103,12 @@ export function Graph({ attacker, defender, move, fixedStat, lineIndicators, fie
         const data: GraphColumns = {}
         const gen = Generations.get(9);
         let statValue: number = 0;
+        const evSteps = attacker.calcData.level > 50 ? 64 : 33
 
         natureOptions.forEach((natureType: NatureMod) => {
             variedPokemon.updateNature(keyNatures[variedStat][natureType]);
-            for (let i = 0; i < 33; i++) {
-                variedPokemon.updateEVs(variedStat, pointsToEVs(i));
+            for (let i = 0; i < evSteps; i++) {
+                variedPokemon.updateEVs(variedStat, pointsToEVs(i, attacker.calcData.level > 50));
 
                 variedPokemon.calcAllStats();
                 computeFinalStats(Generations.get(9), workingPokemon[0].calcData, workingPokemon[1].calcData,

@@ -11,6 +11,7 @@ export interface SelectedPokemonInterface {
     // createSpeciesData: (name: string) => void;
     // createCalcData: (name: string, options: CalcOptions) => void;
     updateSpecies: (newSpecies: Species) => void;
+    updateLevel: (level: number) => void;
     updateEVs: (stat: StatID, evs: number) => void;
     updateIVs: (stat: StatID, ivs: number) => void;
     updateBoosts: (stat: StatID, boosts: number) => void;
@@ -119,6 +120,11 @@ class SelectedPokemon implements SelectedPokemon {
         this.calcData.evs[stat] = evs;
         this.calcData.rawStats[stat] = this.calcStatWrapper(stat);
     }
+    
+    updateLevel(level: number) {
+        this.calcData.level = level;
+        this.calcAllStats()
+    }
 
     updateIVs(stat: StatID, ivs: number) {
         this.calcData.ivs[stat] = ivs;
@@ -162,7 +168,7 @@ class SelectedPokemon implements SelectedPokemon {
     }
 
     getItemBoosts(statName: StatID): number {
-        var rawStat = this.calcData.rawStats[statName];
+        let rawStat = this.calcData.rawStats[statName];
         if (this.calcData.item) {
             switch (statName) {
                 case "spe":
@@ -208,7 +214,7 @@ class SelectedPokemon implements SelectedPokemon {
     }
 
     calcStatWrapper(statName: StatID): number {
-        let rawStat = Stats.calcStat(
+        const rawStat = Stats.calcStat(
             Generations.get(9),
             statName,
             this.speciesData.baseStats[statName],
