@@ -35,7 +35,7 @@ export function GraphOptions({ lineIndicators, updateLineIndicators, fixedStat, 
     }
 
     function handleChangeFixedStat(e: React.ChangeEvent<HTMLInputElement>) {
-        let value = e.target.value as FixedStat;
+        const value = e.target.value as FixedStat;
         updateFixedStat(value);
     }
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { ContainerProps, ThemeRow } from "../../../components/ThemeContainer";
 import { PokemonProps } from "./IntrinsicPokemon";
@@ -30,7 +31,7 @@ function StatRow({ pkmn, updatePkmn, statName }: StatRowProps) {
 
     function getNatureColour(nature: NatureName): string {
         const natureEffects = NATURES[nature];
-        var colour = "";
+        let colour = "";
         if (natureEffects[0] != natureEffects[1]) {
             if (natureEffects[1] === statName) {
                 colour = "bg-blue-100";
@@ -43,7 +44,7 @@ function StatRow({ pkmn, updatePkmn, statName }: StatRowProps) {
     }
 
     function handleEVChange(e: React.ChangeEvent<HTMLInputElement>) {
-        var newStat = parseInt(e.target.value);
+        let newStat = parseInt(e.target.value);
 
         newStat = Number.isNaN(newStat) ? 0 : newStat;
         newStat = validateEVs(pkmn, statName as StatID, newStat);
@@ -54,17 +55,16 @@ function StatRow({ pkmn, updatePkmn, statName }: StatRowProps) {
     }
 
     function handleIVChange(e: React.ChangeEvent<HTMLInputElement>) {
-        var newStat = parseInt(e.target.value);
+        let newStat = parseInt(e.target.value);
         newStat = Number.isNaN(newStat) ? 0 : newStat;
         newStat = validateIVs(newStat);
 
         pkmn.updateIVs(statName as StatID, newStat);
         updatePkmn(pkmn);
-        // e.target.value = String(newStat);
     }
 
     function handleBoostChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        var boostLevel = parseInt(e.target.value);
+        const boostLevel = parseInt(e.target.value);
 
         pkmn.updateBoosts(statName as StatID, boostLevel);
         updatePkmn(pkmn);

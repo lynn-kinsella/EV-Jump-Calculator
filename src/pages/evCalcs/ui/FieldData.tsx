@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ContainerProps, ThemeContainer, ThemeRow } from "../../../components/ThemeContainer";
 import React, { useState } from "react";
 import { Field } from "@smogon/calc";
@@ -89,7 +90,7 @@ export default function FieldData({ field, updateField }: FieldDataProps) {
             </ThemeRow>
 
             <FieldOptionsRow category="Weather">
-                <FieldOption type="radio" value="" name="weather" state={!!!field.weather} updateState={updateWeather} label={"Clear"}></FieldOption>
+                <FieldOption type="radio" value="" name="weather" state={!field.weather} updateState={updateWeather} label={"Clear"}></FieldOption>
                 <FieldOption type="radio" value="Rain" name="weather" state={field.weather == "Rain"} updateState={updateWeather} label={"Rain"}></FieldOption>
                 <FieldOption type="radio" value="Sun" name="weather" state={field.weather == "Sun"} updateState={updateWeather} label={"Sun"}></FieldOption>
                 <FieldOption type="radio" value="Snow" name="weather" state={field.weather == "Snow"} updateState={updateWeather} label={"Snow"}></FieldOption>
@@ -97,7 +98,7 @@ export default function FieldData({ field, updateField }: FieldDataProps) {
             </FieldOptionsRow>
 
             <FieldOptionsRow category="Terrain">
-                <FieldOption type="radio" value="" name="terrain" state={!!!field.terrain} updateState={updateTerrain} label={"No Terrain"}></FieldOption>
+                <FieldOption type="radio" value="" name="terrain" state={!field.terrain} updateState={updateTerrain} label={"No Terrain"}></FieldOption>
                 <FieldOption type="radio" value="Psychic" name="terrain" state={field.terrain == "Psychic"} updateState={updateTerrain} label={"Psychic"}></FieldOption>
                 <FieldOption type="radio" value="Misty" name="terrain" state={field.terrain == "Misty"} updateState={updateTerrain} label={"Misty"}></FieldOption>
                 <FieldOption type="radio" value="Electric" name="terrain" state={field.terrain == "Electric"} updateState={updateTerrain} label={"Electric"}></FieldOption>

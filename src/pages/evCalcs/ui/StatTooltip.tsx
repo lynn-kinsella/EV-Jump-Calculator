@@ -25,7 +25,7 @@ interface TooltipContainerProps {
 function TooltipContainer({ columnData, statName, mouseCoords, target }: TooltipContainerProps) {
     const contentRef = useRef<HTMLDivElement>(null)
     function getDirection(mouseX: number): "l" | "r" {
-        var dir: "l" | "r" = "r"
+        let dir: "l" | "r" = "r"
         if (contentRef.current) {
             if (mouseX < window.innerWidth - contentRef.current.getBoundingClientRect().width) {
                 dir = "l"
@@ -107,7 +107,7 @@ interface TooltipContentsProps extends TooltipPointerProps {
 function TooltipContents({ columnData, target, statName, direction }: TooltipContentsProps) {
 
     function getBorderStyle(dir: "l" | "r"): React.CSSProperties {
-        let borderProperties: React.CSSProperties = {
+        const borderProperties: React.CSSProperties = {
             borderBottomRightRadius: "0.5em",
             borderBottomLeftRadius: "0.5em"
         }
