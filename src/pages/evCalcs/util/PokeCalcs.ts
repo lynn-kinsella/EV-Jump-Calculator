@@ -30,12 +30,18 @@ export function getHP(base: number, ev: number): number {
     return Math.floor((2 * base + 31 + Math.floor(ev / 4)) * 50 / 100) + 50 + 10;
 }
 
-export function pointsToEVs(points: number): number {
+export function pointsToEVs(points: number, singles?: boolean): number {
+    if (singles){
+        return points * 4
+    }
+
     return points && (points - 1) * 8 + 4
 }
 
-
-export function evsToPoints(evs: number): number {
+export function evsToPoints(evs: number, singles?: boolean): number {
+    if (singles){
+        return evs / 4
+    }
     return evs && (evs - 4) / 8 + 1
 }
 
